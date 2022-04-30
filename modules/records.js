@@ -33,8 +33,8 @@ function create_record(root, filepath) {
 	}
 
 	ret.dyer = "";														// FIXME / TODO
-	ret.filename = path.basename(filepath);
 	ret.path = path.dirname(filepath);									// path does not include filename
+	ret.filename = path.basename(filepath);
 
 	// For consistency, lets always use / as a path separator...
 
