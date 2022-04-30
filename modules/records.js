@@ -64,16 +64,16 @@ function canonical_date(record) {
 	let m;
 
 	m = record.DT.match(/\d\d\d\d-\d\d-\d\d/g);
-	if (m.length > 0) return m[0];
+	if (m && m.length > 0) return m[0];
 
 	m = record.DT.match(/\d\d\d\d-\d\d/g);
-	if (m.length > 0) return m[0];
+	if (m && m.length > 0) return m[0];
 
 	m = record.DT.match(/\d\d\d\d/g);
-	if (m.length > 0) return m[0];
+	if (m && m.length > 0) return m[0];
 
 	m = record.DT.match(/\d\d\d/g);
-	if (m.length > 0) return "0" + m[0];
+	if (m && m.length > 0) return "0" + m[0];
 
 	return "";
 }
