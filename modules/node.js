@@ -1,25 +1,14 @@
 "use strict";
 
-// The node object contains the state of an SGF node, i.e. a node in a game tree.
-// SGF properties are stored as a map of key --> list of values, with everything being stored as a string.
-//
-// Note that the canonical source of WHICH COLOUR THE NEXT MOVE SHOULD BE is always get_board().active, no exceptions.
-// If there's any discrepancy between get_board().active and what you'd expect from node props, get_board().active prevails.
-// Nothing in the codebase should depend on get_board().active matching what's in the node. Assume it could be either colour.
-
 const path = require("path");
-
 const stringify = require("./stringify");
 const {replace_all} = require("./utils");
-
-let next_node_id = 1;
 
 // ------------------------------------------------------------------------------------------------
 
 function new_node(parent) {
 
 	let node = Object.create(node_prototype);
-	node.change_id();
 
 	node.parent = parent;
 	node.children = [];
@@ -44,18 +33,6 @@ function new_node(parent) {
 // ------------------------------------------------------------------------------------------------
 
 let node_prototype = {
-
-	change_id: function() {
-		if (!this.id) {
-			this.id = `node_${next_node_id++}`;
-		} else {
-			let old_id = this.id;
-			this.id = `node_${next_node_id++}`;
-			if (this.parent && this.parent.__blessed_child_id === old_id) {
-				this.parent.__blessed_child_id = this.id;
-			}
-		}
-	},
 
 	set: function(key, value) {
 		this.props[key] = [stringify(value)];
