@@ -2,6 +2,7 @@ body {
 	background-color: #ccccccff;
 	color: #000000ff;
 	font-family: monospace, monospace;
+	font-size: 110%;
 	width: 100%;
 	height: 100%;
 	margin: 0;
@@ -33,6 +34,7 @@ body {
 #searchdiv {
 	grid-area: searchdiv;
 	margin: 1em;
+	font-weight: bold;
 	white-space: pre;
 }
 

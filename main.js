@@ -38,6 +38,8 @@ function startup() {
 
 	win.once("ready-to-show", () => {
 
+		electron.nativeTheme.themeSource = "light";
+
 		try {
 			win.webContents.setZoomFactor(desired_zoomfactor);	// This seems to work, note issue 10572 above.
 		} catch (err) {

@@ -102,9 +102,9 @@ let hub_main_props = {
 
 		for (let [i, record] of records.entries()) {
 
-			let result_direction = "? ";
-			if (record.RE.startsWith("B+")) result_direction = "> ";
-			if (record.RE.startsWith("W+")) result_direction = "< ";
+			let result_direction = " ? ";
+			if (record.RE.startsWith("B+")) result_direction = " > ";
+			if (record.RE.startsWith("W+")) result_direction = " < ";
 
 			let element_id = `gamesbox_entry_${i}`;
 
