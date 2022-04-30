@@ -8,7 +8,35 @@ let missing_files = [];
 let new_files = [];
 
 const DELETION_BATCH_SIZE = 5;							// Ugh delete is so slow
-const ADDITION_BATCH_SIZE = 200;
+const ADDITION_BATCH_SIZE = 47;
+
+exports.create_table = function() {
+	try {
+	    let st = db.prepare(`CREATE TABLE Games (
+	        path text,
+	        filename text,
+	        dyer text,
+	        SZ int,
+	        HA int,
+	        PB text,
+	        PW text,
+	        BR text,
+	        WR text,
+	        RE text,
+	        DT text,
+	        EV text)`
+	    );
+		st.run();
+	} catch (err) {
+		// It already exists
+	}
+};
+
+exports.reset_database = function() {
+	let st = db.prepare(`DROP TABLE Games`);
+	st.run();
+	exports.create_table();
+};
 
 exports.update_database = function() {
 
@@ -57,10 +85,10 @@ function continue_work() {
 
 	if (missing_files.length > 0) {
 		continue_deletions();
-		setTimeout(continue_work, 25);
+		setTimeout(continue_work, 5);
 	} else if (new_files.length > 0) {
 		continue_additions();
-		setTimeout(continue_work, 25);
+		setTimeout(continue_work, 5);
 	} else {
 		global.updating = false;
 		document.getElementById("count").innerHTML = `Update finished`;

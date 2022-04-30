@@ -5,7 +5,7 @@ const {ipcRenderer} = require("electron");
 const config_io = require("./config_io");
 const {sort_records, deduplicate_records} = require("./records");
 const {pad_or_slice} = require("./utils");
-const {update_database} = require("./update");
+const {update_database, reset_database} = require("./update");
 
 function init() {
 
@@ -28,6 +28,10 @@ let hub_main_props = {
 
 	update_db: function() {
 		update_database();
+	},
+
+	reset_db: function() {
+		reset_database();
 	},
 
 	search: function() {

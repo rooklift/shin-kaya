@@ -167,6 +167,15 @@ function menu_build() {
 					click: () => {
 						win.webContents.send("call", "update_db");
 					}
+				},
+				{
+					type: "separator",
+				},
+				{
+					label: "Reset (destroy) database",
+					click: () => {
+						win.webContents.send("call", "reset_db");
+					}
 				}
 			]
 		}
