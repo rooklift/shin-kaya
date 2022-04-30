@@ -122,7 +122,7 @@ let hub_main_props = {
 				" " +
 				pad_or_slice(`${record.PW} ${record.WR}`, 24) +
 				" " +
-				pad_or_slice(record.EV, 64) +
+				record.EV +
 				"</span>"
 			);
 		}
