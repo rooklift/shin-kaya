@@ -46,6 +46,10 @@ let node_prototype = {
 		}
 	},
 
+	delete_key: function(key) {
+		delete this.props[key];
+	},
+
 	has_key: function(key) {
 		return Array.isArray(this.props[key]);
 	},
@@ -98,6 +102,35 @@ let node_prototype = {
 			return sz;
 		}
 		return 19;
+	},
+
+	dyer: function() {
+
+		let node = this.get_root();
+		let dyer = {20: "??", 40: "??", 60: "??", 31: "??", 51: "??", 71: "??"};
+		let move_count = 0;
+
+		while (true) {
+
+			if (node.has_key("B") || node.has_key("W")) {
+				move_count++;
+			}
+
+			if ([20, 40, 60, 31, 51, 71].includes(move_count)) {
+				let s = node.get("B") || node.get("W");
+				if (s.length === 2) {
+					dyer[move_count] = s;
+				}
+			}
+
+			if (node.children.length === 0 || move_count >= 71) {
+				break;
+			}
+
+			node = node.children[0];
+		}
+
+		return dyer[20] + dyer[40] + dyer[60] + dyer[31] + dyer[51] + dyer[71];
 	},
 
 	destroy_tree: function() {

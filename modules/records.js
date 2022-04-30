@@ -32,7 +32,8 @@ function create_record(root, filepath) {
 		}
 	}
 
-	ret.dyer = "";														// FIXME / TODO
+	ret.canonicaldate = canonical_date(root.get("DT"));
+	ret.dyer = root.dyer();
 	ret.path = path.dirname(filepath);									// path does not include filename
 	ret.filename = path.basename(filepath);
 
@@ -57,22 +58,20 @@ function create_record_from_path(filepath) {							// Can throw
 	return create_record(root, filepath);
 }
 
-function canonical_date(record) {
-
-	if (!record.DT) return "";
+function canonical_date(DT) {
 
 	let m;
 
-	m = record.DT.match(/\d\d\d\d-\d\d-\d\d/g);
+	m = DT.match(/\d\d\d\d-\d\d-\d\d/g);
 	if (m && m.length > 0) return m[0];
 
-	m = record.DT.match(/\d\d\d\d-\d\d/g);
+	m = DT.match(/\d\d\d\d-\d\d/g);
 	if (m && m.length > 0) return m[0];
 
-	m = record.DT.match(/\d\d\d\d/g);
+	m = DT.match(/\d\d\d\d/g);
 	if (m && m.length > 0) return m[0];
 
-	m = record.DT.match(/\d\d\d/g);
+	m = DT.match(/\d\d\d/g);
 	if (m && m.length > 0) return "0" + m[0];
 
 	return "";
@@ -80,10 +79,8 @@ function canonical_date(record) {
 
 function sort_records(records) {
 	records.sort((a, b) => {
-		let can_date_a = canonical_date(a);
-		let can_date_b = canonical_date(b);
-		if (can_date_a < can_date_b) return -1;
-		if (can_date_a > can_date_b) return 1;
+		if (a.canonicaldate < b.canonicaldate) return -1;
+		if (a.canonicaldate > b.canonicaldate) return 1;
 		return 0;
 	});
 }

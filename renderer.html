@@ -1,20 +1,24 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Shin Kaya</title>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-	<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data:;">
-	<link rel="stylesheet" type="text/css" href="renderer.css">
-	<script defer src="renderer.js"></script>
+    <title>Shin Kaya</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data:;">
+    <link rel="stylesheet" type="text/css" href="renderer.css">
+    <script defer src="renderer.js"></script>
 </head>
 <body>
 
 <div id="gridder">
 
 <div id="searchdiv">
-	PB: <input type="text" id="P1" value="">
-	PW: <input type="text" id="P2" value="">
+Player 1: <input type="text" id="P1" value="">
+Player 2: <input type="text" id="P2" value="">
+   Event: <input type="text" id="EV" value="">
 
+<button id="searchbutton">Search</button>
+
+<span id="count">0 games shown</span>
 </div>
 
 <div id="gamesbox"></div>

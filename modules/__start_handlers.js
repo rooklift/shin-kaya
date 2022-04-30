@@ -10,6 +10,12 @@ window.addEventListener("error", (event) => {
 
 // ------------------------------------------------------------------------------------------------
 
+document.getElementById("searchbutton").addEventListener("click", () => {
+	hub.search();
+});
+
+// ------------------------------------------------------------------------------------------------
+
 ipcRenderer.on("set", (event, msg) => {
 	for (let [key, value] of Object.entries(msg)) {
 		hub.set(key, value);

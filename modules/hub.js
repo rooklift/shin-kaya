@@ -1,9 +1,11 @@
 "use strict";
 
 const {ipcRenderer} = require("electron");
+const path = require("path");
+
 const config_io = require("./config_io");
 const {list_all_files} = require("./walk");
-const {sort_records} = require("./records");
+const {create_record_from_path, sort_records} = require("./records");
 const {pad_or_slice} = require("./utils");
 
 function init() {
@@ -20,7 +22,7 @@ let hub_main_props = {
 		ipcRenderer.send("terminate");		// send "terminate". Not sure about results if that wasn't so.
 	},
 
-	compare: function() {
+	update_db: function() {
 
 		let db_set = Object.create(null);
 
@@ -58,27 +60,101 @@ let hub_main_props = {
 			}
 		}
 
-		console.log("Missing files: ", missing_files);
-		console.log("New files: ", new_files);
+		// ----------------------------------------------------------------------------------------
+
+		st = db.prepare(`DELETE FROM Games WHERE path = ? and filename = ?`);
+
+		let delete_missing = db.transaction(() => {
+			for (let filepath of missing_files) {
+				st.run(path.dirname(filepath), path.basename(filepath));
+			}
+		});
+
+		delete_missing();
+
+		// ----------------------------------------------------------------------------------------
+
+		st = db.prepare(`
+			INSERT INTO Games (
+				path,
+				filename,
+				dyer,
+				canonicaldate,
+				SZ,
+				HA,
+				PB,
+				PW,
+				BR,
+				WR,
+				RE,
+				DT,
+				EV
+			) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )
+		`);
+
+		let i = 0;
+
+		let add_new = db.transaction(() => {
+
+			for (let filepath of new_files) {
+
+				let record;
+
+				try {
+					record = create_record_from_path(filepath);
+				} catch (err) {
+					console.log(err);
+					continue;
+				}
+				
+				st.run(
+					record.path,
+					record.filename,
+					record.dyer,
+					record.canonicaldate,
+					record.SZ,
+					record.HA,
+					record.PB,
+					record.PW,
+					record.BR,
+					record.WR,
+					record.RE,
+					record.DT,
+					record.EV
+				);
+
+				if (i++ % 1000 === 0) {
+					console.log(i);
+				}
+			}
+		});
+
+		add_new();
+
+		console.log("Missing files: ", missing_files.length);
+		console.log("New files: ", new_files.length);
 	},
 
 	search: function() {
 
 		let P1 = "%" + document.getElementById("P1").value + "%";
 		let P2 = "%" + document.getElementById("P2").value + "%";
+		let EV = "%" + document.getElementById("EV").value + "%";
 
 		let st = db.prepare(`
 			SELECT
-				path, filename, dyer, PB, PW, BR, WR, RE, HA, EV, DT, SZ
+				path, filename, dyer, canonicaldate, PB, PW, BR, WR, RE, HA, EV, DT, SZ
 			FROM
 				Games
 			WHERE
 				(
 					(PB like ? and PW like ?) or (PB like ? and PW like ?)
+				) AND (
+					EV like ?
 				)
 		`);
 
-		let results = st.all(P1, P2, P2, P1);
+		let results = st.all(P1, P2, P2, P1, EV);
 
 		// TODO deduplicate here
 
@@ -90,13 +166,13 @@ let hub_main_props = {
 
 		for (let result of results) {
 
-			let result_direction = "?";
-			if (result.RE.startsWith("B+")) result_direction = ">";
-			if (result.RE.startsWith("W+")) result_direction = "<";
+			let result_direction = "? ";
+			if (result.RE.startsWith("B+")) result_direction = "> ";
+			if (result.RE.startsWith("W+")) result_direction = "< ";
 
 			lines.push(
 				"<span>" + 
-				pad_or_slice(result.DT, 12) +
+				pad_or_slice(result.canonicaldate, 20) +
 				" " +
 				pad_or_slice(result.RE, 8) +
 				" " +
@@ -110,6 +186,8 @@ let hub_main_props = {
 				"</span>"
 			);
 		}
+
+		document.getElementById("count").innerHTML = `${results.length} ${results.length === 1 ? "game" : "games"} shown`;
 
 		gamesbox.innerHTML = lines.join("\n");
 

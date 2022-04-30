@@ -16,6 +16,27 @@ global.alert = (msg) => {
 global.hub = require("./hub");
 global.db = sql(path.join(get_href_query_val("user_data_path"), "shinkaya.db"));
 
+try {
+    let st = db.prepare(`CREATE TABLE Games (
+        path text,
+        filename text,
+        dyer text,
+        canonicaldate text,
+        SZ int,
+        HA int,
+        PB text,
+        PW text,
+        BR text,
+        WR text,
+        RE text,
+        DT text,
+        EV text)`
+    );
+	st.run();
+} catch (err) {
+	// It already exists
+}
+
 require("./__start_handlers");
 require("./__start_spinners");
 

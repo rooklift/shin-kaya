@@ -31,12 +31,32 @@ body {
 
 #searchdiv {
 	grid-area: searchdiv;
+	margin: 1em;
 	white-space: pre;
 }
 
 #gamesbox {
 	grid-area: gamesbox;
+	margin: 1em;
 	white-space: pre;
 	overflow-x: hidden;
 	overflow-y: auto;
+}
+
+input {
+	background-color: #181818ff;
+	border: none;
+	caret-color: white;
+	color: #ffffffff;
+	font-family: monospace, monospace;
+	font-size: 100%;
+	width: 40em;
+	pointer-events: auto;
+	user-select: auto;
+}
+
+input:focus {
+	border: none;
+	background-color: #1f1f1fff;
+	outline: none;
 }
