@@ -15,6 +15,7 @@ global.alert = (msg) => {
 
 global.hub = require("./hub");
 global.db = sql(path.join(get_href_query_val("user_data_path"), "shinkaya.db"));
+global.updating = false;
 
 try {
     let st = db.prepare(`CREATE TABLE Games (

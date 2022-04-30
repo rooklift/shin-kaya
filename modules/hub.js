@@ -1,12 +1,11 @@
 "use strict";
 
 const {ipcRenderer} = require("electron");
-const path = require("path");
 
 const config_io = require("./config_io");
-const {list_all_files} = require("./walk");
-const {create_record_from_path, sort_records, deduplicate_records} = require("./records");
+const {sort_records, deduplicate_records} = require("./records");
 const {pad_or_slice} = require("./utils");
+const {update_database} = require("./update");
 
 function init() {
 
@@ -28,113 +27,7 @@ let hub_main_props = {
 	},
 
 	update_db: function() {
-
-		let db_set = Object.create(null);
-
-		let st = db.prepare("SELECT path, filename FROM Games");
-		let db_objects = st.all();
-
-		for (let o of db_objects) {
-			db_set[o.path + "/" + o.filename] = true;		// Not using path.join(), we want to consistently join with "/"
-		}
-
-		// ----------------------------------------------------------------------------------------
-		
-		let file_set = Object.create(null);
-
-		let files = list_all_files(config.sgfdirs);
-
-		for (let f of files) {
-			file_set[f] = true;
-		}
-
-		// ----------------------------------------------------------------------------------------
-
-		let new_files = [];
-		let missing_files = [];
-
-		for (let key of Object.keys(db_set)) {
-			if (!file_set[key]) {
-				missing_files.push(key);
-			}
-		}
-
-		for (let key of Object.keys(file_set)) {
-			if (!db_set[key]) {
-				new_files.push(key);
-			}
-		}
-
-		// ----------------------------------------------------------------------------------------
-
-		st = db.prepare(`DELETE FROM Games WHERE path = ? and filename = ?`);
-
-		let delete_missing = db.transaction(() => {
-			for (let filepath of missing_files) {
-				st.run(path.dirname(filepath), path.basename(filepath));
-			}
-		});
-
-		delete_missing();
-
-		// ----------------------------------------------------------------------------------------
-
-		st = db.prepare(`
-			INSERT INTO Games (
-				path,
-				filename,
-				dyer,
-				SZ,
-				HA,
-				PB,
-				PW,
-				BR,
-				WR,
-				RE,
-				DT,
-				EV
-			) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )
-		`);
-
-		let i = 0;
-
-		let add_new = db.transaction(() => {
-
-			for (let filepath of new_files) {
-
-				let record;
-
-				try {
-					record = create_record_from_path(filepath);
-				} catch (err) {
-					console.log(err);
-					continue;
-				}
-				
-				st.run(
-					record.path,
-					record.filename,
-					record.dyer,
-					record.SZ,
-					record.HA,
-					record.PB,
-					record.PW,
-					record.BR,
-					record.WR,
-					record.RE,
-					record.DT,
-					record.EV
-				);
-
-				if (i++ % 1000 === 0) {
-					console.log(i);
-				}
-			}
-		});
-
-		add_new();
-
-		document.getElementById("count").innerHTML = `Files removed: ${missing_files.length}, files added: ${new_files.length}`;
+		update_database();
 	},
 
 	search: function() {
