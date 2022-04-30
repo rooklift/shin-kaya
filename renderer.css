@@ -39,6 +39,7 @@ body {
 #gamesbox {
 	grid-area: gamesbox;
 	margin: 1em;
+	background-color: #181818ff;
 	white-space: pre;
 	overflow-x: hidden;
 	overflow-y: auto;
