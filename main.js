@@ -148,6 +148,28 @@ function menu_build() {
 				},
 			]
 		},
+		{
+			label: "Database",
+			submenu: [
+				{
+					label: "Deduplicate search results",
+					type: "checkbox",
+					checked: config.deduplicate,
+					click: () => {
+						win.webContents.send("toggle", "deduplicate");
+					}
+				},
+				{
+					type: "separator",
+				},
+				{
+					label: "Update now",
+					click: () => {
+						win.webContents.send("call", "update_db");
+					}
+				}
+			]
+		}
 	];
 
 	return electron.Menu.buildFromTemplate(template);

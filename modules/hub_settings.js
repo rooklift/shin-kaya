@@ -3,7 +3,9 @@
 const {ipcRenderer} = require("electron");
 
 const multichecks = {};
-const togglechecks = {};
+const togglechecks = {
+	"deduplicate":			["Database", "Deduplicate search results"]
+};
 
 for (let menupath of Object.values(multichecks)) {
 	ipcRenderer.send("verify_menupath", menupath);

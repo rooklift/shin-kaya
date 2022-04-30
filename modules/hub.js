@@ -136,8 +136,7 @@ let hub_main_props = {
 
 		add_new();
 
-		console.log("Missing files: ", missing_files.length);
-		console.log("New files: ", new_files.length);
+		document.getElementById("count").innerHTML = `Files removed: ${missing_files.length}, files added: ${new_files.length}`;
 	},
 
 	search: function() {
@@ -175,7 +174,9 @@ let hub_main_props = {
 
 		let records = st.all(P1, P2, P2, P1, EV, DT, pth, fname, dyer);
 
-		deduplicate_records(records);
+		if (config.deduplicate) {
+			deduplicate_records(records);
+		}
 		sort_records(records);
 
 		gamesbox.innerHTML = "";
