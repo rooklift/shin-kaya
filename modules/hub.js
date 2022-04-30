@@ -107,8 +107,9 @@ let hub_main_props = {
 			if (record.RE.startsWith("W+")) result_direction = " < ";
 
 			let element_id = `gamesbox_entry_${i}`;
-
 			this.lookups[element_id] = record.path + "/" + record.filename;
+
+			let ha_string = (record.HA >= 2) ? "(H" + record.HA.toString() + ")" : "";
 
 			lines.push(
 				`<span id="${element_id}" class="game">` + 
@@ -116,11 +117,13 @@ let hub_main_props = {
 				" " +
 				pad_or_slice(record.RE, 8) +
 				" " +
-				pad_or_slice(`${record.PB} ${record.BR}`, 24) + 
+				pad_or_slice(`${record.PB} ${record.BR}`, 26) + 
 				" " +
 				result_direction +
 				" " +
-				pad_or_slice(`${record.PW} ${record.WR}`, 24) +
+				pad_or_slice(`${record.PW} ${record.WR}`, 26) +
+				" " +
+				pad_or_slice(ha_string, 5) + 
 				" " +
 				pad_or_slice(record.EV, 128) +
 				"</span>"
