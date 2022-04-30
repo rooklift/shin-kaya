@@ -65,8 +65,7 @@ input:focus {
 }
 
 .game:hover {
-	background-color: #fff0f0ff;
-	color: #cc0000ff;
+	background-color: #ffffffff;
 }
 
 .bold {
