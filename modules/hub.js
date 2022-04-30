@@ -172,6 +172,12 @@ let hub_main_props = {
 
 		let records = st.all(P1, P2, P2, P1, EV, DT, pth, fname, dyer);
 
+		let truncated = false;
+		if (records.length > 9999) {
+			records = records.slice(0, 9999);
+			truncated = true;
+		}
+
 		if (config.deduplicate) {
 			deduplicate_records(records);
 		}
@@ -208,7 +214,8 @@ let hub_main_props = {
 			);
 		}
 
-		document.getElementById("count").innerHTML = `${records.length} ${records.length === 1 ? "game" : "games"} shown`;
+		document.getElementById("count").innerHTML =
+			`${records.length} ${records.length === 1 ? "game" : "games"} shown${truncated ? " (too many results; refine the search)" : ""}`;
 
 		gamesbox.innerHTML = lines.join("\n");
 
