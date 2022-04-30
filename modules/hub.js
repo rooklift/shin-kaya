@@ -3,6 +3,7 @@
 const {ipcRenderer} = require("electron");
 const config_io = require("./config_io");
 const {list_all_files} = require("./walk");
+const {pad_or_slice} = require("./utils");
 
 function init() {
 	let hub_prototype = {};
@@ -58,6 +59,55 @@ let hub_main_props = {
 
 		console.log("Missing files: ", missing_files);
 		console.log("New files: ", new_files);
+	},
+
+	search: function() {
+
+		let P1 = "%" + document.getElementById("P1").value + "%";
+		let P2 = "%" + document.getElementById("P2").value + "%";
+
+		let st = db.prepare(`
+			SELECT
+				path, filename, dyer, PB, PW, BR, WR, RE, HA, EV, DT, SZ
+			FROM
+				Games
+			WHERE
+				(
+					(PB like ? and PW like ?) or (PB like ? and PW like ?)
+				)
+		`);
+
+		let results = st.all(P1, P2, P2, P1);
+
+		gamesbox.innerHTML = "";
+
+		let lines = [];
+
+		for (let result of results) {
+
+			let result_direction = "?";
+			if (result.RE.startsWith("B+")) result_direction = ">";
+			if (result.RE.startsWith("W+")) result_direction = "<";
+
+			lines.push(
+				"<p>" + 
+				pad_or_slice(result.DT, 12) +
+				" " +
+				pad_or_slice(result.RE, 8) +
+				" " +
+				pad_or_slice(`${result.PB} ${result.BR}`, 24) + 
+				" " +
+				result_direction +
+				" " +
+				pad_or_slice(`${result.PW} ${result.WR}`, 24) +
+				" " +
+				pad_or_slice(result.EV, 40) +
+				"</p>"
+			);
+		}
+
+		gamesbox.innerHTML = lines.join("");
+
 	},
 
 };
