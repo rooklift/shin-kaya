@@ -3,6 +3,7 @@
 const {ipcRenderer} = require("electron");
 const config_io = require("./config_io");
 const {list_all_files} = require("./walk");
+const {sort_records} = require("./records");
 const {pad_or_slice} = require("./utils");
 
 function init() {
@@ -79,6 +80,10 @@ let hub_main_props = {
 
 		let results = st.all(P1, P2, P2, P1);
 
+		// TODO deduplicate here
+
+		sort_records(results);
+
 		gamesbox.innerHTML = "";
 
 		let lines = [];
@@ -90,7 +95,7 @@ let hub_main_props = {
 			if (result.RE.startsWith("W+")) result_direction = "<";
 
 			lines.push(
-				"<p>" + 
+				"<span>" + 
 				pad_or_slice(result.DT, 12) +
 				" " +
 				pad_or_slice(result.RE, 8) +
@@ -101,12 +106,12 @@ let hub_main_props = {
 				" " +
 				pad_or_slice(`${result.PW} ${result.WR}`, 24) +
 				" " +
-				pad_or_slice(result.EV, 40) +
-				"</p>"
+				pad_or_slice(result.EV, 64) +
+				"</span>"
 			);
 		}
 
-		gamesbox.innerHTML = lines.join("");
+		gamesbox.innerHTML = lines.join("\n");
 
 	},
 

@@ -57,6 +57,37 @@ function create_record_from_path(filepath) {							// Can throw
 	return create_record(root, filepath);
 }
 
+function canonical_date(record) {
+
+	if (!record.DT) return "";
+
+	let m;
+
+	m = record.DT.match(/\d\d\d\d-\d\d-\d\d/g);
+	if (m.length > 0) return m[0];
+
+	m = record.DT.match(/\d\d\d\d-\d\d/g);
+	if (m.length > 0) return m[0];
+
+	m = record.DT.match(/\d\d\d\d/g);
+	if (m.length > 0) return m[0];
+
+	m = record.DT.match(/\d\d\d/g);
+	if (m.length > 0) return "0" + m[0];
+
+	return "";
+}
+
+function sort_records(records) {
+	records.sort((a, b) => {
+		let can_date_a = canonical_date(a);
+		let can_date_b = canonical_date(b);
+		if (can_date_a < can_date_b) return -1;
+		if (can_date_a > can_date_b) return 1;
+		return 0;
+	});
+}
 
 
-module.exports = {create_record_from_path};
+
+module.exports = {create_record_from_path, sort_records};
