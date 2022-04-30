@@ -21,7 +21,6 @@ try {
         path text,
         filename text,
         dyer text,
-        canonicaldate text,
         SZ int,
         HA int,
         PB text,

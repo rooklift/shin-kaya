@@ -84,7 +84,6 @@ let hub_main_props = {
 				path,
 				filename,
 				dyer,
-				canonicaldate,
 				SZ,
 				HA,
 				PB,
@@ -94,7 +93,7 @@ let hub_main_props = {
 				RE,
 				DT,
 				EV
-			) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )
+			) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )
 		`);
 
 		let i = 0;
@@ -116,7 +115,6 @@ let hub_main_props = {
 					record.path,
 					record.filename,
 					record.dyer,
-					record.canonicaldate,
 					record.SZ,
 					record.HA,
 					record.PB,
@@ -153,7 +151,7 @@ let hub_main_props = {
 
 		let st = db.prepare(`
 			SELECT
-				path, filename, dyer, canonicaldate, PB, PW, BR, WR, RE, HA, EV, DT, SZ
+				path, filename, dyer, PB, PW, BR, WR, RE, HA, EV, DT, SZ
 			FROM
 				Games
 			WHERE
@@ -195,7 +193,7 @@ let hub_main_props = {
 
 			lines.push(
 				`<span id="${element_id}" class="game">` + 
-				pad_or_slice(record.canonicaldate, 20) +
+				pad_or_slice(record.DT, 12) +
 				" " +
 				pad_or_slice(record.RE, 8) +
 				" " +

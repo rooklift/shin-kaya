@@ -14,9 +14,12 @@ function create_record(root, filepath) {
 
 	// Strings...
 
-	for (let key of ["BR", "WR", "EV", "PB", "PW", "DT", "RE"]) {
+	for (let key of ["BR", "WR", "EV", "PB", "PW"]) {
 		ret[key] = root.get(key);										// get() returns "" if absent, which is what we want.
 	}
+
+	ret.DT = canonicaldate(root.get("DT"));
+	ret.RE = canonicalresult(root.get("RE"));
 
 	// Ints...
 
@@ -33,8 +36,7 @@ function create_record(root, filepath) {
 			ret[key] = 0;
 		}
 	}
-
-	ret.canonicaldate = canonicaldate(root.get("DT"));
+	
 	ret.dyer = root.dyer();
 	ret.path = path.dirname(filepath);									// path does not include filename
 	ret.filename = path.basename(filepath);
@@ -89,10 +91,38 @@ function canonicaldate(DT) {
 	return "";
 }
 
+function canonicalresult(RE) {
+
+	RE = RE.trim().toUpperCase();
+
+	if (RE.startsWith("B+R")) return "B+R";
+	if (RE.startsWith("W+R")) return "W+R";
+	if (RE.startsWith("B+T")) return "B+T";
+	if (RE.startsWith("W+T")) return "W+T";
+	if (RE.startsWith("B+F")) return "B+F";
+	if (RE.startsWith("W+F")) return "W+F";
+	if (RE.startsWith("VOID")) return "Void";
+	if (RE.startsWith("JIGO")) return "Draw";
+	if (RE.startsWith("DRAW")) return "Draw";
+
+	if (RE.startsWith("B+") || RE.startsWith("W+")) {
+
+		let slice_index = 2;
+
+		while ("0123456789.".includes(RE[slice_index])) {
+			slice_index++;
+		}
+
+		return RE.slice(0, slice_index);
+	}
+
+	return "?";
+}
+
 function sort_records(records) {
 	records.sort((a, b) => {
-		if (a.canonicaldate < b.canonicaldate) return -1;
-		if (a.canonicaldate > b.canonicaldate) return 1;
+		if (a.DT < b.DT) return -1;
+		if (a.DT > b.DT) return 1;
 		return 0;
 	});
 }
@@ -107,8 +137,8 @@ function deduplicate_records(records) {
 
 	for (let n = records.length - 1; n > 0; n--) {
 		if (records[n].dyer === records[n - 1].dyer) {
-			if (records[n].canonicaldate === records[n - 1].canonicaldate) {
-				records.splice(n, 1);		// In place
+			if (records[n].DT === records[n - 1].DT) {
+				records.splice(n, 1);						// In place
 			}
 		}
 	}
