@@ -1,6 +1,6 @@
 body {
-	background-color: #080808ff;
-	color: #efefefff;
+	background-color: #ccccccff;
+	color: #000000ff;
 	font-family: monospace, monospace;
 	width: 100%;
 	height: 100%;
@@ -12,12 +12,12 @@ body {
 
 ::-webkit-scrollbar {
 	pointer-events: auto;
-	background-color: #181818ff;
+	background-color: #bbbbbbff;
 }
 
 ::-webkit-scrollbar-thumb {
 	pointer-events: auto;
-	background-color: #444444ff;
+	background-color: #ddddddff;
 }
 
 #gridder {
@@ -39,17 +39,17 @@ body {
 #gamesbox {
 	grid-area: gamesbox;
 	margin: 1em;
-	background-color: #181818ff;
+	background-color: #f0f0f0ff;
 	white-space: pre;
 	overflow-x: hidden;
 	overflow-y: auto;
 }
 
 input {
-	background-color: #1f1f1fff;
+	background-color: #f0f0f0ff;
 	border: none;
-	caret-color: white;
-	color: #ffffffff;
+	caret-color: black;
+	color: #000000ff;
 	font-family: monospace, monospace;
 	font-size: 100%;
 	width: 40em;
@@ -60,10 +60,11 @@ input {
 
 input:focus {
 	border: none;
-	background-color: #282828ff;
+	background-color: #ffffffff;
 	outline: none;
 }
 
 .game:hover {
-	color: #6cccee;
+	background-color: #fff0f0ff;
+	color: #cc0000ff;
 }
