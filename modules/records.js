@@ -34,7 +34,7 @@ function create_record(root, filepath) {
 		}
 	}
 
-	ret.canonicaldate = canonical_date(root.get("DT"));
+	ret.canonicaldate = canonicaldate(root.get("DT"));
 	ret.dyer = root.dyer();
 	ret.path = path.dirname(filepath);									// path does not include filename
 	ret.filename = path.basename(filepath);
@@ -70,7 +70,7 @@ function create_record_from_path(filepath) {							// Can throw
 	return create_record(root, filepath);
 }
 
-function canonical_date(DT) {
+function canonicaldate(DT) {
 
 	let m;
 
@@ -97,6 +97,23 @@ function sort_records(records) {
 	});
 }
 
+function deduplicate_records(records) {
+
+	records.sort((a, b) => {
+		if (a.dyer < b.dyer) return -1;
+		if (a.dyer > b.dyer) return 1;
+		return 0;
+	});
+
+	for (let n = records.length - 1; n > 0; n--) {
+		if (records[n].dyer === records[n - 1].dyer) {
+			if (records[n].canonicaldate === records[n - 1].canonicaldate) {
+				records.splice(n, 1);		// In place
+			}
+		}
+	}
+}
 
 
-module.exports = {create_record_from_path, sort_records};
+
+module.exports = {create_record_from_path, sort_records, deduplicate_records};

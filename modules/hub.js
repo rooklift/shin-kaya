@@ -5,7 +5,7 @@ const path = require("path");
 
 const config_io = require("./config_io");
 const {list_all_files} = require("./walk");
-const {create_record_from_path, sort_records} = require("./records");
+const {create_record_from_path, sort_records, deduplicate_records} = require("./records");
 const {pad_or_slice} = require("./utils");
 
 function init() {
@@ -175,8 +175,7 @@ let hub_main_props = {
 
 		let records = st.all(P1, P2, P2, P1, EV, DT, pth, fname, dyer);
 
-		// TODO deduplicate here
-
+		deduplicate_records(records);
 		sort_records(records);
 
 		gamesbox.innerHTML = "";
