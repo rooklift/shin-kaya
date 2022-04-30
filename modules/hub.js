@@ -9,10 +9,15 @@ const {create_record_from_path, sort_records} = require("./records");
 const {pad_or_slice} = require("./utils");
 
 function init() {
+
 	let hub_prototype = {};
 	Object.assign(hub_prototype, hub_main_props);
 	Object.assign(hub_prototype, require("./hub_settings"));
-	return Object.create(hub_prototype);
+
+	let ret = Object.create(hub_prototype);
+	ret.lookups = Object.create(null);		// element id --> fullpath
+
+	return ret;
 }
 
 let hub_main_props = {
@@ -137,9 +142,15 @@ let hub_main_props = {
 
 	search: function() {
 
+		this.lookups = Object.create(null);
+
 		let P1 = "%" + document.getElementById("P1").value + "%";
 		let P2 = "%" + document.getElementById("P2").value + "%";
 		let EV = "%" + document.getElementById("EV").value + "%";
+		let DT = "%" + document.getElementById("DT").value + "%";
+		let pth = "%" + document.getElementById("pth").value + "%";
+		let fname = "%" + document.getElementById("fname").value + "%";
+		let dyer = "%" + document.getElementById("dyer").value + "%";
 
 		let st = db.prepare(`
 			SELECT
@@ -151,43 +162,55 @@ let hub_main_props = {
 					(PB like ? and PW like ?) or (PB like ? and PW like ?)
 				) AND (
 					EV like ?
+				) AND (
+					DT like ?
+				) AND (
+					path like ?
+				) AND (
+					filename like ?
+				) AND (
+					dyer like ?
 				)
 		`);
 
-		let results = st.all(P1, P2, P2, P1, EV);
+		let records = st.all(P1, P2, P2, P1, EV, DT, pth, fname, dyer);
 
 		// TODO deduplicate here
 
-		sort_records(results);
+		sort_records(records);
 
 		gamesbox.innerHTML = "";
 
 		let lines = [];
 
-		for (let result of results) {
+		for (let [i, record] of records.entries()) {
 
 			let result_direction = "? ";
-			if (result.RE.startsWith("B+")) result_direction = "> ";
-			if (result.RE.startsWith("W+")) result_direction = "< ";
+			if (record.RE.startsWith("B+")) result_direction = "> ";
+			if (record.RE.startsWith("W+")) result_direction = "< ";
+
+			let element_id = `gamesbox_entry_${i}`;
+
+			this.lookups[element_id] = record.path + "/" + record.filename;
 
 			lines.push(
-				"<span>" + 
-				pad_or_slice(result.canonicaldate, 20) +
+				`<span id="${element_id}">` + 
+				pad_or_slice(record.canonicaldate, 20) +
 				" " +
-				pad_or_slice(result.RE, 8) +
+				pad_or_slice(record.RE, 8) +
 				" " +
-				pad_or_slice(`${result.PB} ${result.BR}`, 24) + 
+				pad_or_slice(`${record.PB} ${record.BR}`, 24) + 
 				" " +
 				result_direction +
 				" " +
-				pad_or_slice(`${result.PW} ${result.WR}`, 24) +
+				pad_or_slice(`${record.PW} ${record.WR}`, 24) +
 				" " +
-				pad_or_slice(result.EV, 64) +
+				pad_or_slice(record.EV, 64) +
 				"</span>"
 			);
 		}
 
-		document.getElementById("count").innerHTML = `${results.length} ${results.length === 1 ? "game" : "games"} shown`;
+		document.getElementById("count").innerHTML = `${records.length} ${records.length === 1 ? "game" : "games"} shown`;
 
 		gamesbox.innerHTML = lines.join("\n");
 
