@@ -169,6 +169,12 @@ function menu_build() {
 					}
 				},
 				{
+					label: "Count entries",
+					click: () => {
+						win.webContents.send("call", "count_rows");
+					}
+				},
+				{
 					type: "separator",
 				},
 				{

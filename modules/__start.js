@@ -18,7 +18,8 @@ global.hub = require("./hub");
 global.db = sql(path.join(get_href_query_val("user_data_path"), "shinkaya.db"));
 global.updating = false;
 
-create_table();
+create_table();									// Will abort if already exists
+hub.count_rows();
 
 require("./__start_handlers");
 require("./__start_spinners");

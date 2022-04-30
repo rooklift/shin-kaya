@@ -34,6 +34,12 @@ let hub_main_props = {
 		reset_database();
 	},
 
+	count_rows: function() {
+		let st = db.prepare(`SELECT COUNT(*) FROM Games`);
+		let count = st.get()["COUNT(*)"];
+		document.getElementById("count").innerHTML = `Database has ${count} entries`;
+	},
+
 	search: function() {
 
 		this.lookups = Object.create(null);
