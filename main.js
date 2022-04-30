@@ -130,38 +130,6 @@ function menu_build() {
 					type: "separator",
 				},
 				{
-					label: "Foo",
-					type: "checkbox",
-					checked: config.foo,
-					click: () => {
-						win.webContents.send("toggle", "foo");
-					}
-				},
-				{
-					label: "Bar",
-					submenu: [
-						{
-							label: "1",
-							type: "checkbox",
-							checked: config.bar === 1,
-							click: () => {
-								win.webContents.send("set", {bar: 1});
-							}
-						},
-						{
-							label: "2",
-							type: "checkbox",
-							checked: config.bar === 2,
-							click: () => {
-								win.webContents.send("set", {bar: 2});
-							}
-						}
-					]
-				},
-				{
-					type: "separator",
-				},
-				{
 					role: "toggledevtools"
 				},
 				{

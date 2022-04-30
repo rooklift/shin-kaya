@@ -2,13 +2,8 @@
 
 const {ipcRenderer} = require("electron");
 
-const multichecks = {
-	bar:		["App", "Bar"],
-};
-
-const togglechecks = {
-	foo:		["App", "Foo"],
-};
+const multichecks = {};
+const togglechecks = {};
 
 for (let menupath of Object.values(multichecks)) {
 	ipcRenderer.send("verify_menupath", menupath);
