@@ -194,7 +194,7 @@ let hub_main_props = {
 			this.lookups[element_id] = record.path + "/" + record.filename;
 
 			lines.push(
-				`<span id="${element_id}">` + 
+				`<span id="${element_id}" class="game">` + 
 				pad_or_slice(record.canonicaldate, 20) +
 				" " +
 				pad_or_slice(record.RE, 8) +

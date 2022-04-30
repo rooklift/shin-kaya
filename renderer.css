@@ -7,6 +7,7 @@ body {
 	margin: 0;
 	padding: 0;
 	overflow: hidden;
+	user-select: none;
 }
 
 ::-webkit-scrollbar {
@@ -60,4 +61,8 @@ input:focus {
 	border: none;
 	background-color: #1f1f1fff;
 	outline: none;
+}
+
+.game:hover {
+	color: #6cccee;
 }

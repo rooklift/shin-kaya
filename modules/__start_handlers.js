@@ -1,6 +1,7 @@
 "use strict";
 
-const {ipcRenderer} = require("electron");
+const {ipcRenderer, shell} = require("electron");
+const {event_path_string} = require("./utils");
 
 // Uncaught exceptions should trigger an alert (once only)...
 
@@ -12,6 +13,15 @@ window.addEventListener("error", (event) => {
 
 document.getElementById("searchbutton").addEventListener("click", () => {
 	hub.search();
+});
+
+document.getElementById("gamesbox").addEventListener("dblclick", (event) => {
+	let suffix = event_path_string(event, "gamesbox_entry_");
+	if (suffix) {
+		let element_id = "gamesbox_entry_" + suffix;
+		let fullpath = hub.lookups[element_id];
+		shell.openPath(fullpath);
+	}
 });
 
 // ------------------------------------------------------------------------------------------------
