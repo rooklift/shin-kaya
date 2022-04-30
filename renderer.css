@@ -2,7 +2,6 @@ body {
 	background-color: #ccccccff;
 	color: #000000ff;
 	font-family: monospace, monospace;
-	font-size: 110%;
 	width: 100%;
 	height: 100%;
 	margin: 0;
@@ -34,7 +33,6 @@ body {
 #searchdiv {
 	grid-area: searchdiv;
 	margin: 1em;
-	font-weight: bold;
 	white-space: pre;
 }
 
@@ -52,7 +50,7 @@ input {
 	border: none;
 	caret-color: black;
 	color: #000000ff;
-	font-family: monospace, monospace;
+	font-family: initial;
 	font-size: 100%;
 	width: 40em;
 	margin-bottom: 4px;
@@ -69,4 +67,8 @@ input:focus {
 .game:hover {
 	background-color: #fff0f0ff;
 	color: #cc0000ff;
+}
+
+.bold {
+	font-weight: bold;
 }

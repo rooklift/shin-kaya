@@ -127,7 +127,7 @@ let hub_main_props = {
 			);
 		}
 
-		let count_string = `${records.length} ${records.length === 1 ? "game" : "games"} shown`;
+		let count_string = `<span class="bold">${records.length}</span> ${records.length === 1 ? "game" : "games"} shown`;
 
 		if (dedup_count > 0) {
 			count_string += `;  deduplicated ${dedup_count} ${dedup_count === 1 ? "game" : "games"}`;

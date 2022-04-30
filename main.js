@@ -18,11 +18,9 @@ electron.app.whenReady().then(() => {
 
 function startup() {
 
-	let desired_zoomfactor = 1 / electron.screen.getPrimaryDisplay().scaleFactor;
-
 	win = new electron.BrowserWindow({
-		width: Math.round(config.width * desired_zoomfactor),
-		height: Math.round(config.height * desired_zoomfactor),
+		width: config.width,
+		height: config.height,
 		backgroundColor: "#000000",
 		resizable: true,
 		show: false,
@@ -31,20 +29,13 @@ function startup() {
 			backgroundThrottling: false,
 			contextIsolation: false,
 			nodeIntegration: true,
-			spellcheck: false,
-			zoomFactor: desired_zoomfactor			// Unreliable? See https://github.com/electron/electron/issues/10572
+			spellcheck: false
 		}
 	});
 
 	win.once("ready-to-show", () => {
 
 		electron.nativeTheme.themeSource = "light";
-
-		try {
-			win.webContents.setZoomFactor(desired_zoomfactor);	// This seems to work, note issue 10572 above.
-		} catch (err) {
-			win.webContents.zoomFactor = desired_zoomfactor;	// The method above "will be removed" in future.
-		}
 
 		if (config.maxed) {
 			win.maximize();
@@ -106,7 +97,6 @@ function startup() {
 
 	let query = {};
 	query.user_data_path = electron.app.getPath("userData");
-	query.zoomfactor = desired_zoomfactor;
 
 	win.loadFile(
 		path.join(__dirname, "renderer.html"),
@@ -139,6 +129,18 @@ function menu_build() {
 					click: () => {
 						electron.shell.showItemInFolder(config_io.filepath);
 					}
+				},
+				{
+					type: "separator",
+				},
+				{
+					role: "resetZoom",
+				},
+				{
+					role: "zoomIn",
+				},
+				{
+					role: "zoomOut",
 				},
 				{
 					type: "separator",
