@@ -32,6 +32,7 @@ let hub_main_props = {
 
 	reset_db: function() {
 		reset_database();
+		this.count_rows();
 	},
 
 	count_rows: function() {
