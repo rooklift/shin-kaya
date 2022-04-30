@@ -76,10 +76,6 @@ function startup() {
 		electron.app.quit();
 	});
 
-	electron.ipcMain.once("renderer_ready", () => {
-		// This is the place to load any files given on command line.
-	});
-
 	electron.ipcMain.on("alert", (event, msg) => {
 		alert(win, msg);
 	});
