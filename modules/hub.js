@@ -170,13 +170,18 @@ let hub_main_props = {
 				)
 		`);
 
-		let records = st.all(P1, P2, P2, P1, EV, DT, pth, fname, dyer);
+		let iterator = st.iterate(P1, P2, P2, P1, EV, DT, pth, fname, dyer);
 
+		let records = [];
 		let truncated = false;
-		if (records.length > 9999) {
-			records = records.slice(0, 9999);
-			truncated = true;
-		}
+
+		for (let o of iterator) {
+			records.push(o);
+			if (records.length >= 9999) {
+				truncated = true;
+				break;
+			}
+		};
 
 		if (config.deduplicate) {
 			deduplicate_records(records);
