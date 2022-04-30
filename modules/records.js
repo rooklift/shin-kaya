@@ -6,6 +6,8 @@ const path = require("path");
 const load_sgf = require("./load_sgf");
 const {replace_all} = require("./utils");
 
+const gogod_name_fixes = require("./gogod_name_fixes");
+
 function create_record(root, filepath) {
 
 	let ret = {};
@@ -41,6 +43,16 @@ function create_record(root, filepath) {
 
 	if (global.process && global.process.platform === "win32") {
 		ret.path = replace_all(ret.path, "\\", "/");
+	}
+
+	// Apply GoGoD name fixes...
+
+	if (gogod_name_fixes[ret.PB]) {
+		ret.PB = gogod_name_fixes[ret.PB];
+	}
+
+	if (gogod_name_fixes[ret.PW]) {
+		ret.PW = gogod_name_fixes[ret.PW];
 	}
 
 	return ret;
