@@ -183,8 +183,12 @@ let hub_main_props = {
 			}
 		};
 
+		let dedup_count = 0;
+
 		if (config.deduplicate) {
+			let length_before = records.length;
 			deduplicate_records(records);
+			dedup_count = length_before - records.length;
 		}
 		sort_records(records);
 
@@ -219,8 +223,17 @@ let hub_main_props = {
 			);
 		}
 
-		document.getElementById("count").innerHTML =
-			`${records.length} ${records.length === 1 ? "game" : "games"} shown${truncated ? " (too many results; refine the search)" : ""}`;
+		let count_string = `${records.length} ${records.length === 1 ? "game" : "games"} shown`;
+
+		if (dedup_count > 0) {
+			count_string += `;  deduplicated ${dedup_count} ${dedup_count === 1 ? "game" : "games"}`;
+		}
+
+		if (truncated) {
+			count_string += `;  too many results`;
+		}
+
+		document.getElementById("count").innerHTML = count_string;
 
 		gamesbox.innerHTML = lines.join("\n");
 
