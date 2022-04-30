@@ -51,6 +51,7 @@ input {
 	caret-color: black;
 	color: #000000ff;
 	font-size: 100%;
+	font-family: monospace, monospace;
 	width: 40em;
 	margin-bottom: 4px;
 	pointer-events: auto;
