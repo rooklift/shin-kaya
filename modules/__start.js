@@ -16,7 +16,6 @@ global.alert = (msg) => {
 
 global.hub = require("./hub");
 global.db = sql(path.join(get_href_query_val("user_data_path"), "shinkaya.db"));
-global.updating = false;
 
 create_table();									// Will abort if already exists
 hub.count_rows();

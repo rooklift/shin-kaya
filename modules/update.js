@@ -40,11 +40,9 @@ exports.reset_database = function() {
 
 exports.update_database = function() {
 
-	if (global.updating) {
+	if (missing_files.length > 0 || new_files.length > 0) {		// Updating already in progress
 		return;
 	}
-
-	global.updating = true;
 
 	// ----------------------------------------------------------------------------------------
 
@@ -90,7 +88,6 @@ function continue_work() {
 		continue_additions();
 		setTimeout(continue_work, 5);
 	} else {
-		global.updating = false;
 		document.getElementById("count").innerHTML = `Update finished`;
 	}
 
