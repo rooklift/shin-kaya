@@ -119,6 +119,21 @@ exports.pad = function(s, width, leftflag) {
 	return leftflag ? padding + s : s + padding;
 };
 
+exports.pad_or_slice = function(s, width, leftflag) {
+
+	if (typeof s !== "string") {	// Necessary test because stringify runs .trim() which can affect the result
+		s = stringify(s);
+	}
+
+	if (s.length >= width) {
+		return s.slice(0, width);
+	}
+
+	let padding = " ".repeat(width - s.length);
+
+	return leftflag ? padding + s : s + padding;
+};
+
 exports.get_href_query_val = function(key) {
 	let s = global.location.search;
 	if (s[0] === "?") s = s.slice(1);
