@@ -31,7 +31,7 @@ let hub_main_props = {
 	},
 
 	display_no_connection: function() {
-		document.getElementById("count").innerHTML = `No database open`;
+		document.getElementById("status").innerHTML = `No database open`;
 	},
 
 	connect_db: function() {
@@ -79,7 +79,7 @@ let hub_main_props = {
 		}
 		let st = db.current().prepare(`SELECT COUNT(*) FROM Games`);
 		let count = st.get()["COUNT(*)"];
-		document.getElementById("count").innerHTML = `Database has ${count} entries - ${config.sgfdir}`;
+		document.getElementById("status").innerHTML = `Database has ${count} entries - ${config.sgfdir}`;
 	},
 
 	search: function() {
@@ -186,7 +186,7 @@ let hub_main_props = {
 			count_string += `;  too many results`;
 		}
 
-		document.getElementById("count").innerHTML = count_string;
+		document.getElementById("status").innerHTML = count_string;
 
 		gamesbox.innerHTML = lines.join("\n");
 

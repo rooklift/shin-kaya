@@ -104,7 +104,7 @@ exports.update = function() {
 		return;
 	}
 
-	document.getElementById("count").innerHTML = `Updating, this may take some time...`;
+	document.getElementById("status").innerHTML = `Updating, this may take some time...`;
 
 	// Start the work in a timeout so the page has a chance to update with the message.
 
@@ -154,7 +154,7 @@ function really_update() {
 			continue_work(current_db, missing_files.length, new_files.length);
 		}, 5);
 	} else {
-		document.getElementById("count").innerHTML = `No changes made`;
+		document.getElementById("status").innerHTML = `No changes made`;
 	}
 };
 
@@ -164,7 +164,7 @@ function continue_work(database, total_deletions, total_additions) {
 		throw new Error("continue_work(): database changed unexpectedly");
 	}
 
-	document.getElementById("count").innerHTML = `In progress, ${missing_files.length + new_files.length} updates remaining...`;
+	document.getElementById("status").innerHTML = `In progress, ${missing_files.length + new_files.length} updates remaining...`;
 
 	if (missing_files.length > 0) {
 		continue_deletions();
@@ -180,7 +180,7 @@ function continue_work(database, total_deletions, total_additions) {
 			continue_work(database, total_deletions, total_additions);
 		}, 5);
 	} else {
-		document.getElementById("count").innerHTML = `Update completed - deletions: ${total_deletions}, additions: ${total_additions}`;
+		document.getElementById("status").innerHTML = `Update completed - deletions: ${total_deletions}, additions: ${total_additions}`;
 	}
 
 }
