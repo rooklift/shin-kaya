@@ -151,14 +151,14 @@ function really_update() {
 	if (missing_files.length > 0 || new_files.length > 0) {
 		work_timeout_id = setTimeout(() => {
 			work_timeout_id = null;
-			continue_work(current_db);
+			continue_work(current_db, missing_files.length, new_files.length);
 		}, 5);
 	} else {
 		document.getElementById("count").innerHTML = `No changes made`;
 	}
 };
 
-function continue_work(database) {
+function continue_work(database, total_deletions, total_additions) {
 
 	if (database !== current_db) {
 		throw new Error("continue_work(): database changed unexpectedly");
@@ -177,10 +177,10 @@ function continue_work(database) {
 	if (missing_files.length > 0 || new_files.length > 0) {
 		work_timeout_id = setTimeout(() => {
 			work_timeout_id = null;
-			continue_work(database);
+			continue_work(database, total_deletions, total_additions);
 		}, 5);
 	} else {
-		document.getElementById("count").innerHTML = `Update completed`;
+		document.getElementById("count").innerHTML = `Update completed - deletions: ${total_deletions}, additions: ${total_additions}`;
 	}
 
 }
