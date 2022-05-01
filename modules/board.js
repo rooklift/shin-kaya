@@ -280,7 +280,7 @@ function board_from_node(nd) {
 	return board;
 }
 
-function board_from_path(filepath, depth = 30) {
+function board_from_path(filepath, depth = 40) {
 
 	let root;
 

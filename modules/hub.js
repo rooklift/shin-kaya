@@ -4,6 +4,8 @@ const {ipcRenderer} = require("electron");
 
 const config_io = require("./config_io");
 const db = require("./db");
+const {new_board, board_from_path} = require("./board");
+const thumbnail = require("./thumbnail");
 const {sort_records, deduplicate_records} = require("./records");
 const {pad_or_slice} = require("./utils");
 
@@ -187,6 +189,13 @@ let hub_main_props = {
 
 		gamesbox.innerHTML = lines.join("\n");
 
+	},
+
+	set_preview_from_element(element_id) {
+		let fullpath = this.lookups[element_id];
+		let board = fullpath ? board_from_path(fullpath) : new_board(19, 19);
+		let o = thumbnail(board);
+		document.getElementById("preview").src = o.data;
 	},
 
 };
