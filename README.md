@@ -1,5 +1,7 @@
 Experiments in creating a Go game database app using Electron.
 
+![Screenshot](https://user-images.githubusercontent.com/16438795/166145467-584ff746-3c19-4658-a17c-c2ee962487fe.png)
+
 Dev steps needed:
 
 ```
