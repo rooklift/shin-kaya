@@ -107,6 +107,18 @@ exports.update = function() {
 		return;
 	}
 
+	document.getElementById("count").innerHTML = `Updating, this may take some time...`;
+
+	// Start the work in a timeout so the page has a chance to update with the message.
+
+	work_timeout_id = setTimeout(() => {
+		work_timeout_id = null;
+		really_update();
+	}, 5);
+};
+
+function really_update() {
+
 	// Make a set of all known files in the database...
 
 	let db_set = Object.create(null);
@@ -141,6 +153,7 @@ exports.update = function() {
 
 	if (missing_files.length > 0 || new_files.length > 0) {
 		work_timeout_id = setTimeout(() => {
+			work_timeout_id = null;
 			continue_work(current_db);
 		}, 5);
 	} else {
@@ -149,8 +162,6 @@ exports.update = function() {
 };
 
 function continue_work(database) {
-
-	work_timeout_id = null;
 
 	if (database !== current_db) {
 		throw new Error("continue_work(): database changed unexpectedly");
@@ -168,6 +179,7 @@ function continue_work(database) {
 
 	if (missing_files.length > 0 || new_files.length > 0) {
 		work_timeout_id = setTimeout(() => {
+			work_timeout_id = null;
 			continue_work(database);
 		}, 5);
 	} else {
