@@ -20,3 +20,4 @@ if (config_io.error()) {
 	alert("Config file failed to load. It will not be written to. You should fix this.");
 }
 
+hub.connect_db();

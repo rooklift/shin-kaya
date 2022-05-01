@@ -139,9 +139,11 @@ exports.update = function() {
 
 	// Schedule the work...
 
-	work_timeout_id = setTimeout(() => {
-		continue_work(current_db);
-	}, 5);
+	if (missing_files.length > 0 || new_files.length > 0) {
+		work_timeout_id = setTimeout(() => {
+			continue_work(current_db);
+		}, 5);
+	}
 };
 
 function continue_work(database) {
