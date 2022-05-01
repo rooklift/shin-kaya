@@ -61,6 +61,17 @@ let node_prototype = {
 		return this.props[key][0];
 	},
 
+	all_values: function(key) {
+		let ret = [];
+		if (!this.has_key(key)) {
+			return ret;
+		}
+		for (let value of this.props[key]) {
+			ret.push(value);
+		}
+		return ret;
+	},
+
 	get_root: function() {
 		if (!this.__root) {
 			throw new Error("get_root(): root not available");

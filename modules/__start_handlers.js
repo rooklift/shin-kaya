@@ -1,6 +1,8 @@
 "use strict";
 
 const {ipcRenderer, shell} = require("electron");
+const {board_from_path} = require("./board");
+const thumbnail = require("./thumbnail");
 const {event_path_string} = require("./utils");
 
 // Uncaught exceptions should trigger an alert (once only)...
@@ -21,6 +23,17 @@ document.getElementById("gamesbox").addEventListener("dblclick", (event) => {
 		let element_id = "gamesbox_entry_" + suffix;
 		let fullpath = hub.lookups[element_id];
 		shell.openPath(fullpath);
+	}
+});
+
+document.getElementById("gamesbox").addEventListener("click", (event) => {
+	let suffix = event_path_string(event, "gamesbox_entry_");
+	if (suffix) {
+		let element_id = "gamesbox_entry_" + suffix;
+		let fullpath = hub.lookups[element_id];
+		let board = board_from_path(fullpath);
+		let o = thumbnail(board);
+		document.getElementById("preview").src = o.data;
 	}
 });
 

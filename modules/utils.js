@@ -7,11 +7,50 @@ const stringify = require("./stringify");
 
 exports.xy_to_s = function(x, y) {
 
-	if (x < 0 || x >= 19 || y < 0 || y >= 19) {
+	if (x < 0 || x >= 26 || y < 0 || y >= 26) {
 		return "";
 	}
 
 	return String.fromCharCode(x + 97) + String.fromCharCode(y + 97);
+};
+
+exports.points_list = function(s) {
+
+	// Note that the values returned are not guaranteed to be valid / on-board etc.
+
+	if (s.length === 2) {
+		return [s];
+	}
+
+	if (s.length !== 5 || s[2] !== ":") {
+		return [];
+	}
+
+	let ret = [];
+
+	let x1 = s.charCodeAt(0) - 97;
+	let y1 = s.charCodeAt(1) - 97;
+	let x2 = s.charCodeAt(3) - 97;
+	let y2 = s.charCodeAt(4) - 97;
+
+	if (x1 > x2) {
+		let tmp = x1; x1 = x2; x2 = tmp;
+	}
+
+	if (y1 > y2) {
+		let tmp = y1; y1 = y2; y2 = tmp;
+	}
+
+	for (let x = x1; x <= x2; x++) {
+		for (let y = y1; y <= y2; y++) {
+			let z = exports.xy_to_s(x, y);
+			if (z) {
+				ret.push(z);
+			}
+		}
+	}
+
+	return ret;
 };
 
 exports.replace_all = function(s, search, replace) {

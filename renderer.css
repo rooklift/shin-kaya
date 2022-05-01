@@ -26,18 +26,34 @@ body {
 	grid-template-columns: 1fr;
 	grid-template-rows: min-content 1fr;
 	grid-template-areas:
-		"searchdiv"
-		"gamesbox";
+		"s_p"
+		"g";
+}
+
+#search_preview {
+	grid-area: s_p;
+	display: grid;
+	grid-template-columns: min-content 1fr;
+	grid-template-rows: 1fr;
+	grid-template-areas:
+		"sd pd";
 }
 
 #searchdiv {
-	grid-area: searchdiv;
+	grid-area: sd;
 	margin: 1em;
 	white-space: pre;
 }
 
+#preview {
+	grid-area: pd;
+	margin: 1em;
+	align-self: center;
+	justify-self: right;
+}
+
 #gamesbox {
-	grid-area: gamesbox;
+	grid-area: g;
 	margin: 1em;
 	background-color: #f0f0f0ff;
 	white-space: pre;
