@@ -209,19 +209,10 @@ function continue_additions() {
 
 	let st = current_db.prepare(`
 		INSERT INTO Games (
-			path,
-			filename,
-			dyer,
-			SZ,
-			HA,
-			PB,
-			PW,
-			BR,
-			WR,
-			RE,
-			DT,
-			EV
-		) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )
+			path, filename, dyer, SZ, HA, PB, PW, BR, WR, RE, DT, EV
+		) VALUES (
+			?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
+		)
 	`);
 
 	let add_new = current_db.transaction(() => {
@@ -238,18 +229,7 @@ function continue_additions() {
 			}
 			
 			st.run(
-				record.path,
-				record.filename,
-				record.dyer,
-				record.SZ,
-				record.HA,
-				record.PB,
-				record.PW,
-				record.BR,
-				record.WR,
-				record.RE,
-				record.DT,
-				record.EV
+				record.path, record.filename, record.dyer, record.SZ, record.HA, record.PB, record.PW, record.BR, record.WR, record.RE, record.DT, record.EV
 			);
 		}
 	});
