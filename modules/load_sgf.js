@@ -6,7 +6,7 @@ const new_byte_pusher = require("./byte_pusher");
 
 // ------------------------------------------------------------------------------------------------
 
-function load_sgf(buf) {
+function load_sgf(buf) {														// Can throw.
 
 	let root;
 	let allow_charset_reset = true;
