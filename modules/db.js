@@ -27,7 +27,6 @@ exports.current = function() {
 
 exports.connect = function() {			// Using config.sgfdir
 
-	exports.stop_update();
 	exports.close();
 
 	if (typeof config.sgfdir !== "string" || !fs.existsSync(config.sgfdir)) {
@@ -51,9 +50,16 @@ exports.close = function() {
 
 exports.drop_table = function() {
 
+	if (!current_db) {
+		return;
+	}
+
 	exports.stop_update();
 
 	let st = current_db.prepare(`DROP TABLE Games`);
+	st.run();
+
+	st = current_db.prepare(`vacuum`);
 	st.run();
 	
 	create_table();
