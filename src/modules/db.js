@@ -197,12 +197,7 @@ function continue_deletions() {
 
 	delete_missing();
 
-	if (missing_files.length > DELETION_BATCH_SIZE) {
-		missing_files = missing_files.slice(DELETION_BATCH_SIZE);
-	} else {
-		missing_files = [];
-	}
-
+	missing_files = missing_files.slice(DELETION_BATCH_SIZE);		// Possibly clearing the array entirely.
 }
 
 function continue_additions() {
@@ -236,9 +231,5 @@ function continue_additions() {
 
 	add_new();
 
-	if (new_files.length > ADDITION_BATCH_SIZE) {
-		new_files = new_files.slice(ADDITION_BATCH_SIZE);
-	} else {
-		new_files = [];
-	}
+	new_files = new_files.slice(ADDITION_BATCH_SIZE);				// Possibly clearing the array entirely.
 }
