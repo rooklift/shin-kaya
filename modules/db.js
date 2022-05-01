@@ -143,6 +143,8 @@ exports.update = function() {
 		work_timeout_id = setTimeout(() => {
 			continue_work(current_db);
 		}, 5);
+	} else {
+		document.getElementById("count").innerHTML = `No changes made`;
 	}
 };
 
@@ -168,6 +170,8 @@ function continue_work(database) {
 		work_timeout_id = setTimeout(() => {
 			continue_work(database);
 		}, 5);
+	} else {
+		document.getElementById("count").innerHTML = `Update completed`;
 	}
 
 }
