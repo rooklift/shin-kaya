@@ -131,7 +131,7 @@ let hub_main_props = {
 				truncated = true;
 				break;
 			}
-		};
+		}
 
 		let dedup_count = 0;
 
@@ -142,7 +142,7 @@ let hub_main_props = {
 		}
 		sort_records(records);
 
-		gamesbox.innerHTML = "";
+		document.getElementById("gamesbox").innerHTML = "";
 
 		let lines = [];
 
@@ -188,7 +188,7 @@ let hub_main_props = {
 
 		document.getElementById("status").innerHTML = count_string;
 
-		gamesbox.innerHTML = lines.join("\n");
+		document.getElementById("gamesbox").innerHTML = lines.join("\n");
 
 	},
 

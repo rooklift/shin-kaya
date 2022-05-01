@@ -156,7 +156,7 @@ function really_update() {
 	} else {
 		document.getElementById("status").innerHTML = `No changes made`;
 	}
-};
+}
 
 function continue_work(database, total_deletions, total_additions) {
 

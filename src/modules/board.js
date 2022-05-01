@@ -306,4 +306,4 @@ function board_from_path(filepath) {
 
 
 
-module.exports = {new_board, board_from_node, board_from_path}
+module.exports = {new_board, board_from_node, board_from_path};

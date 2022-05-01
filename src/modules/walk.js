@@ -37,4 +37,4 @@ function list_all_files(...args) {
 
 
 
-module.exports = {list_all_files}
+module.exports = {list_all_files};
