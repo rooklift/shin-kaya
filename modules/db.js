@@ -30,7 +30,7 @@ exports.connect = function() {			// Using config.sgfdir
 	exports.stop_update();
 	exports.close();
 
-	if (!fs.existsSync(config.sgfdir)) {
+	if (typeof config.sgfdir !== "string" || !fs.existsSync(config.sgfdir)) {
 		config.sgfdir = null;
 		return;
 	}

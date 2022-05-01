@@ -1,6 +1,7 @@
 "use strict";
 
 const {ipcRenderer} = require("electron");
+const db = require("./db");
 
 const multichecks = {};
 const togglechecks = {
@@ -22,7 +23,11 @@ module.exports = {
 		config[key] = value;
 
 		switch (key) {
-			// Followup actions go here.
+
+			case "sgfdir":
+				db.connect();
+				this.count_rows();
+				break;
 		}
 
 		if (multichecks.hasOwnProperty(key)) {

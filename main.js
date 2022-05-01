@@ -167,6 +167,17 @@ function menu_build() {
 					type: "separator",
 				},
 				{
+					label: "Select archive folder...",
+					click: () => {
+						electron.dialog.showOpenDialog(win, {properties: ["openDirectory"]})
+						.then(o => {
+							if (Array.isArray(o.filePaths) && o.filePaths.length > 0) {
+								win.webContents.send("set", {sgfdir: o.filePaths[0]});
+							}
+						});
+					}
+				},
+				{
 					label: "Update now",
 					click: () => {
 						win.webContents.send("call", "update_db");
