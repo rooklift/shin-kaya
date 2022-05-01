@@ -115,7 +115,7 @@ function menu_build() {
 				{
 					label: "About",
 					click: () => {
-						alert(win, `${electron.app.getName()} (${electron.app.getVersion()}) in Electron (${process.versions.electron})`);
+						alert(win, `Shin Kaya (${electron.app.getVersion()}) in Electron (${process.versions.electron})`);
 					}
 				},
 				{
