@@ -66,7 +66,7 @@ function create_record_from_path(filepath) {							// Can throw
 		throw new Error("No such file");
 	}
 
-	let buf = fs.readFileSync(filepath);								// Can throw (theoretically)
+	let buf = fs.readFileSync(filepath);								// Can throw (theoretically and maybe actually)
 	let root = load_sgf(buf);											// Can throw
 
 	return create_record(root, filepath);
