@@ -3,9 +3,9 @@
 const {ipcRenderer} = require("electron");
 
 const config_io = require("./config_io");
+const db = require("./db");
 const {sort_records, deduplicate_records} = require("./records");
 const {pad_or_slice} = require("./utils");
-const {update_database, reset_database} = require("./update");
 
 function init() {
 
@@ -22,26 +22,69 @@ function init() {
 let hub_main_props = {
 
 	quit: function() {
+		db.stop_update();
 		config_io.save();					// As long as we use the sync save, this will complete before we
 		ipcRenderer.send("terminate");		// send "terminate". Not sure about results if that wasn't so.
 	},
 
+	display_no_connection: function() {
+		document.getElementById("count").innerHTML = `No database open`;
+	},
+
+	connect_db: function() {
+
+		if (typeof config.sgfdir !== "string" || config.sgfdir === "") {
+			this.display_no_connection();
+			return;
+		}
+
+		db.connect();
+		this.count_rows();
+
+	},
+
 	update_db: function() {
-		update_database();
+		if (!db.current()) {
+			this.display_no_connection();
+			return;
+		}
+		db.update();
+	},
+
+	stop_update: function() {
+		if (!db.current()) {
+			this.display_no_connection();
+			return;
+		}
+		db.stop_update();
+		this.count_rows();
 	},
 
 	reset_db: function() {
-		reset_database();
+		if (!db.current()) {
+			this.display_no_connection();
+			return;
+		}
+		db.drop_table();
 		this.count_rows();
 	},
 
 	count_rows: function() {
-		let st = db.prepare(`SELECT COUNT(*) FROM Games`);
+		if (!db.current()) {
+			this.display_no_connection();
+			return;
+		}
+		let st = db.current().prepare(`SELECT COUNT(*) FROM Games`);
 		let count = st.get()["COUNT(*)"];
 		document.getElementById("count").innerHTML = `Database has ${count} entries`;
 	},
 
 	search: function() {
+
+		if (!db.current()) {
+			this.display_no_connection();
+			return;
+		}
 
 		this.lookups = Object.create(null);
 
@@ -53,7 +96,7 @@ let hub_main_props = {
 		let fname = "%" + document.getElementById("fname").value + "%";
 		let dyer = "%" + document.getElementById("dyer").value + "%";
 
-		let st = db.prepare(`
+		let st = db.current().prepare(`
 			SELECT
 				path, filename, dyer, PB, PW, BR, WR, RE, HA, EV, DT, SZ
 			FROM
