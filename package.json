@@ -1,6 +1,6 @@
 {
-  "name": "Shin Kaya",
-  "version": "1",
+  "name": "shin-kaya",
+  "version": "1.0.0",
   "main": "main.js",
   "dependencies": {
     "better-sqlite3": "^7.5.1"
