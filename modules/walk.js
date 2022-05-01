@@ -8,7 +8,13 @@ function list_all_files(...args) {
 	let dir_list = args.flat(Infinity);
 	let ret = [];
 	for (let d of dir_list) {
-		let read = fs.readdirSync(d);
+		let read;
+		try {
+			read = fs.readdirSync(d);
+		} catch (err) {
+			console.log(err.toString());
+			continue;
+		}
 		for (let o of read) {
 			let fullpath = path.join(d, o);
 			if (o.toLowerCase().endsWith(".sgf")) {								// We think this is a file...
@@ -22,11 +28,7 @@ function list_all_files(...args) {
 			} else if (o.toLowerCase().endsWith("journal")) {
 				// pass
 			} else {															// We think this is a directory...
-				try {
-					ret = ret.concat(list_all_files(fullpath));
-				} catch (err) {
-					// pass
-				}
+				ret = ret.concat(list_all_files(fullpath));
 			}
 		}
 	}
