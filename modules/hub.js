@@ -1,6 +1,6 @@
 "use strict";
 
-const {ipcRenderer} = require("electron");
+const {ipcRenderer, shell} = require("electron");
 
 const config_io = require("./config_io");
 const db = require("./db");
@@ -17,6 +17,7 @@ function init() {
 
 	let ret = Object.create(hub_prototype);
 	ret.lookups = Object.create(null);		// element id --> fullpath
+	ret.preview_path = null;
 
 	return ret;
 }
@@ -196,6 +197,13 @@ let hub_main_props = {
 		let board = fullpath ? board_from_path(fullpath) : new_board(19, 19);
 		let o = thumbnail(board);
 		document.getElementById("preview").src = o.data;
+		this.preview_path = fullpath ? fullpath : null;
+	},
+
+	open_preview_file() {
+		if (this.preview_path) {
+			shell.openPath(this.preview_path);
+		}
 	},
 
 };

@@ -24,6 +24,10 @@ document.getElementById("gamesbox").addEventListener("dblclick", (event) => {
 	}
 });
 
+document.getElementById("preview").addEventListener("dblclick", () => {
+	hub.open_preview_file();
+});
+
 document.getElementById("gamesbox").addEventListener("click", (event) => {
 	let suffix = event_path_string(event, "gamesbox_entry_");
 	if (suffix) {
