@@ -18,21 +18,21 @@ document.getElementById("searchbutton").addEventListener("click", () => {
 document.getElementById("gamesbox").addEventListener("dblclick", (event) => {
 	let suffix = event_path_string(event, "gamesbox_entry_");
 	if (suffix) {
-		let element_id = "gamesbox_entry_" + suffix;
-		let fullpath = hub.lookups[element_id];
-		shell.openPath(fullpath);
+		let n = parseInt(suffix, 10);
+		hub.open_file_from_index(n);
 	}
-});
-
-document.getElementById("preview").addEventListener("dblclick", () => {
-	hub.open_preview_file();
 });
 
 document.getElementById("gamesbox").addEventListener("click", (event) => {
 	let suffix = event_path_string(event, "gamesbox_entry_");
 	if (suffix) {
-		hub.set_preview_from_element("gamesbox_entry_" + suffix);
+		let n = parseInt(suffix, 10);
+		hub.set_preview_from_index(n);
 	}
+});
+
+document.getElementById("preview").addEventListener("dblclick", () => {
+	hub.open_preview_file();
 });
 
 for (let element of document.querySelectorAll("input")) {

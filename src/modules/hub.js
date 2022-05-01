@@ -16,7 +16,7 @@ function init() {
 	Object.assign(hub_prototype, require("./hub_settings"));
 
 	let ret = Object.create(hub_prototype);
-	ret.lookups = Object.create(null);		// element id --> fullpath
+	ret.lookups = [];
 	ret.preview_path = null;
 
 	return ret;
@@ -89,7 +89,7 @@ let hub_main_props = {
 			return;
 		}
 
-		this.lookups = Object.create(null);
+		this.lookups = [];
 
 		let P1 = "%" + document.getElementById("P1").value + "%";
 		let P2 = "%" + document.getElementById("P2").value + "%";
@@ -153,8 +153,6 @@ let hub_main_props = {
 			if (record.RE.startsWith("W+")) result_direction = " < ";
 
 			let element_id = `gamesbox_entry_${i}`;
-			this.lookups[element_id] = record.path + "/" + record.filename;
-
 			let ha_string = (record.HA >= 2) ? "(H" + record.HA.toString() + ")" : "";
 
 			lines.push(
@@ -174,6 +172,8 @@ let hub_main_props = {
 				pad_or_slice(record.EV, 128) +
 				"</span>"
 			);
+
+			this.lookups.push(record.path + "/" + record.filename);
 		}
 
 		let count_string = `<span class="bold">${records.length}</span> ${records.length === 1 ? "game" : "games"} shown`;
@@ -192,15 +192,31 @@ let hub_main_props = {
 
 	},
 
-	set_preview_from_element(element_id) {
-		let fullpath = this.lookups[element_id];
-		let board = fullpath ? board_from_path(fullpath) : new_board(19, 19);
+	set_preview_from_index: function(n) {			// Or can also pass null to set the empty preview
+
+		let fullpath = null;
+		let board = null;
+
+		if (typeof n === "number" && !Number.isNaN(n) && n >= 0 && n < this.lookups.length) {
+			fullpath = this.lookups[n];
+			board = board_from_path(fullpath);
+		} else {
+			board = new_board(19, 19);
+		}
+
 		let o = thumbnail(board);
 		document.getElementById("preview").src = o.data;
-		this.preview_path = fullpath ? fullpath : null;
+		this.preview_path = fullpath;
 	},
 
-	open_preview_file() {
+	open_file_from_index: function(n) {
+		if (typeof n === "number" && !Number.isNaN(n) && n >= 0 && n < this.lookups.length) {
+			let fullpath = this.lookups[n];
+			shell.openPath(fullpath);
+		}
+	},
+
+	open_preview_file: function() {
 		if (this.preview_path) {
 			shell.openPath(this.preview_path);
 		}
