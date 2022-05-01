@@ -140,9 +140,8 @@ let hub_main_props = {
 			deduplicate_records(records);
 			dedup_count = length_before - records.length;
 		}
-		sort_records(records);
 
-		document.getElementById("gamesbox").innerHTML = "";
+		sort_records(records);		// After the above deduplication, which also has an in-place sort during the process.
 
 		let lines = [];
 
