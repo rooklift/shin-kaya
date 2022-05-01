@@ -76,7 +76,7 @@ let hub_main_props = {
 		}
 		let st = db.current().prepare(`SELECT COUNT(*) FROM Games`);
 		let count = st.get()["COUNT(*)"];
-		document.getElementById("count").innerHTML = `Database has ${count} entries`;
+		document.getElementById("count").innerHTML = `Database has ${count} entries - ${config.sgfdir}`;
 	},
 
 	search: function() {
