@@ -24,6 +24,14 @@ document.getElementById("gamesbox").addEventListener("dblclick", (event) => {
 	}
 });
 
+for (let element of document.querySelectorAll("input")) {
+	element.addEventListener("keydown", (event) => {
+		if (event.code === "Enter" || event.code === "NumpadEnter") {
+			hub.search();
+		}
+	});
+}
+
 // ------------------------------------------------------------------------------------------------
 
 ipcRenderer.on("set", (event, msg) => {
