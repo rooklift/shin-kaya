@@ -24,9 +24,9 @@ function list_all_files(...args) {
 					ret.push(fullpath);
 				}
 			} else if (o.toLowerCase().endsWith(".db")) {
-				// pass
+				console.log(`Skipping ${fullpath}`);
 			} else if (o.toLowerCase().endsWith("journal")) {
-				// pass
+				console.log(`Skipping ${fullpath}`);
 			} else {															// We think this is a directory...
 				ret = ret.concat(list_all_files(fullpath));
 			}
