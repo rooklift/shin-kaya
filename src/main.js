@@ -164,6 +164,43 @@ function menu_build() {
 					}
 				},
 				{
+					label: "Preview depth",
+					submenu: [
+						{
+							label: "30",
+							type: "checkbox",
+							checked: config.preview_depth === 30,
+							click: () => {
+								win.webContents.send("set", {preview_depth: 30});
+							}
+						},
+						{
+							label: "40",
+							type: "checkbox",
+							checked: config.preview_depth === 40,
+							click: () => {
+								win.webContents.send("set", {preview_depth: 40});
+							}
+						},
+						{
+							label: "60",
+							type: "checkbox",
+							checked: config.preview_depth === 60,
+							click: () => {
+								win.webContents.send("set", {preview_depth: 60});
+							}
+						},
+						{
+							label: "999",
+							type: "checkbox",
+							checked: config.preview_depth === 999,
+							click: () => {
+								win.webContents.send("set", {preview_depth: 999});
+							}
+						},
+					]
+				},
+				{
 					type: "separator",
 				},
 				{

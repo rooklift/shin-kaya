@@ -280,7 +280,7 @@ function board_from_node(nd) {
 	return board;
 }
 
-function board_from_path(filepath, depth = 40) {
+function board_from_path(filepath) {
 
 	let root;
 
@@ -293,7 +293,7 @@ function board_from_path(filepath, depth = 40) {
 
 	let node = root;
 
-	for (let n = 0; n < depth; n++) {
+	for (let n = 0; n < config.preview_depth; n++) {
 		if (node.children.length > 0) {
 			node = node.children[0];
 		} else {

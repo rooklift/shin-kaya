@@ -26,6 +26,7 @@ exports.defaults = {
 	"maxed": false,
 
 	"deduplicate": true,
+	"preview_depth": 40,
 	"sgfdir": null,
 };
 
