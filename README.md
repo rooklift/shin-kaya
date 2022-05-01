@@ -8,4 +8,4 @@ npm install --save-dev electron-rebuild
 .\node_modules\.bin\electron-rebuild.cmd
 ```
 
-That seems to be it?
+That seems to be it? Anyway, it works now.
