@@ -18,10 +18,8 @@ function list_all_files(...args) {
 					ret.push(fullpath);
 				}
 			} else if (o.toLowerCase().endsWith(".db")) {
-				console.log("Skipping:", o);
 				// pass
 			} else if (o.toLowerCase().endsWith("journal")) {
-				console.log("Skipping:", o);
 				// pass
 			} else {															// We think this is a directory...
 				try {
