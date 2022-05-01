@@ -35,7 +35,7 @@ exports.connect = function() {			// Using config.sgfdir
 		return;
 	}
 
-	current_db = sql(path.join(config.sgfdir, "shinkaya.db"));
+	current_db = sql(path.join(config.sgfdir, "shin-kaya.db"));
 	create_table();
 };
 
