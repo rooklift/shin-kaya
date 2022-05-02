@@ -14,7 +14,7 @@ function create_record(root, filepath) {
 
 	// Strings...
 
-	for (let key of ["BR", "WR", "EV", "PB", "PW"]) {
+	for (let key of ["EV", "RO", "PB", "PW", "BR", "WR"]) {
 		ret[key] = root.get(key);										// get() returns "" if absent, which is what we want.
 	}
 

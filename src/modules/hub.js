@@ -91,36 +91,38 @@ let hub_main_props = {
 
 		this.lookups = [];
 
-		let P1 = "%" + document.getElementById("P1").value + "%";
-		let P2 = "%" + document.getElementById("P2").value + "%";
-		let EV = "%" + document.getElementById("EV").value + "%";
-		let DT = "%" + document.getElementById("DT").value + "%";
 		let pth = "%" + document.getElementById("pth").value + "%";
 		let fname = "%" + document.getElementById("fname").value + "%";
 		let dyer = "%" + document.getElementById("dyer").value + "%";
 
+		let P1 = "%" + document.getElementById("P1").value + "%";
+		let P2 = "%" + document.getElementById("P2").value + "%";
+		let DT = "%" + document.getElementById("DT").value + "%";
+		let EV = "%" + document.getElementById("EV").value + "%";
+		let RO = "%" + document.getElementById("RO").value + "%";
+
 		let st = db.current().prepare(`
 			SELECT
-				path, filename, dyer, PB, PW, BR, WR, RE, HA, EV, DT, SZ
+				path, filename, dyer, PB, PW, DT, EV, RO, SZ, HA, BR, WR, RE
 			FROM
 				Games
 			WHERE
-				(
-					(PB like ? and PW like ?) or (PB like ? and PW like ?)
-				) AND (
-					EV like ?
-				) AND (
-					DT like ?
-				) AND (
-					path like ?
-				) AND (
-					filename like ?
-				) AND (
-					dyer like ?
-				)
+				(path like ?)
+					and
+				(filename like ?)
+					and
+				(dyer like ?)
+					and
+				((PB like ? and PW like ?) or (PB like ? and PW like ?))
+					and
+				(DT like ?)
+					and
+				(EV like ?)
+					and
+				(RO like ?)
 		`);
 
-		let iterator = st.iterate(P1, P2, P2, P1, EV, DT, pth, fname, dyer);
+		let iterator = st.iterate(pth, fname, dyer, P1, P2, P2, P1, DT, EV, RO);
 
 		let records = [];
 		let truncated = false;
@@ -154,6 +156,11 @@ let hub_main_props = {
 			let element_id = `gamesbox_entry_${i}`;
 			let ha_string = (record.HA >= 2) ? "(H" + record.HA.toString() + ")" : "";
 
+			let ev_ro_string = record.EV;
+			if (record.RO) {
+				ev_ro_string += ` (${record.RO})`;
+			}
+
 			lines.push(
 				`<span id="${element_id}" class="game">` + 
 				safe_html(
@@ -169,7 +176,7 @@ let hub_main_props = {
 					" " +
 					pad_or_slice(ha_string, 5) + 
 					" " +
-					pad_or_slice(record.EV, 128)
+					pad_or_slice(ev_ro_string, 128)
 				) +
 				"</span>"
 			);

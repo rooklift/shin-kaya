@@ -72,7 +72,8 @@ function create_table() {
 	        WR text,
 	        RE text,
 	        DT text,
-	        EV text)`
+	        EV text,
+	        RO text)`
 	    );
 		st.run();
 	} catch (err) {
@@ -204,9 +205,9 @@ function continue_additions() {
 
 	let st = current_db.prepare(`
 		INSERT INTO Games (
-			path, filename, dyer, SZ, HA, PB, PW, BR, WR, RE, DT, EV
+			path, filename, dyer, SZ, HA, PB, PW, BR, WR, RE, DT, EV, RO
 		) VALUES (
-			?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
+			?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
 		)
 	`);
 
@@ -214,18 +215,16 @@ function continue_additions() {
 
 		for (let filepath of new_files.slice(0, ADDITION_BATCH_SIZE)) {
 
-			let record;
+			let r;
 
 			try {
-				record = create_record_from_path(filepath);
+				r = create_record_from_path(filepath);
 			} catch (err) {
 				console.log(err);
 				continue;
 			}
 			
-			st.run(
-				record.path, record.filename, record.dyer, record.SZ, record.HA, record.PB, record.PW, record.BR, record.WR, record.RE, record.DT, record.EV
-			);
+			st.run(r.path, r.filename, r.dyer, r.SZ, r.HA, r.PB, r.PW, r.BR, r.WR, r.RE, r.DT, r.EV, r.RO);
 		}
 	});
 
