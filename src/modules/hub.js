@@ -101,11 +101,7 @@ let hub_main_props = {
 		let RO = "%" + document.getElementById("RO").value + "%";
 
 		let st = db.current().prepare(`
-			SELECT
-				*
-			FROM
-				Games
-			WHERE
+			SELECT * FROM Games WHERE
 				(path like ?)
 					and
 				(filename like ?)
