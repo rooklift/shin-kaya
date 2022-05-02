@@ -186,8 +186,9 @@ let hub_main_props = {
 		}
 
 		document.getElementById("status").innerHTML = count_string;
-
 		document.getElementById("gamesbox").innerHTML = lines.join("\n");
+
+		this.set_preview_from_index(null);
 
 	},
 
@@ -211,7 +212,7 @@ let hub_main_props = {
 		} else {
 
 			this.preview_path = null;
-			
+
 			let o = thumbnail(new_board(19, 19));
 			document.getElementById("preview").src = o.data;
 
