@@ -103,7 +103,7 @@ let hub_main_props = {
 
 		let st = db.current().prepare(`
 			SELECT
-				path, filename, dyer, PB, PW, DT, EV, RO, SZ, HA, BR, WR, RE
+				path, filename, dyer, SZ, HA, PB, PW, BR, WR, RE, DT, EV, RO
 			FROM
 				Games
 			WHERE
