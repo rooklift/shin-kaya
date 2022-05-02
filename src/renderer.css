@@ -80,7 +80,7 @@ input:focus {
 	outline: none;
 }
 
-.game:hover {
+.highlightedgame {
 	background-color: #ffffffff;
 }
 

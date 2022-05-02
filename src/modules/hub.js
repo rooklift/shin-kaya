@@ -193,19 +193,29 @@ let hub_main_props = {
 
 	set_preview_from_index: function(n) {			// Or can also pass null to set the empty preview
 
-		let fullpath = null;
-		let board = null;
-
-		if (typeof n === "number" && !Number.isNaN(n) && n >= 0 && n < this.lookups.length) {
-			fullpath = this.lookups[n];
-			board = board_from_path(fullpath);
-		} else {
-			board = new_board(19, 19);
+		let highlighted = document.getElementsByClassName("highlightedgame")[0];
+		if (highlighted) {
+			highlighted.className = "";
 		}
 
-		let o = thumbnail(board);
-		document.getElementById("preview").src = o.data;
-		this.preview_path = fullpath;
+		if (typeof n === "number" && !Number.isNaN(n) && n >= 0 && n < this.lookups.length) {
+
+			this.preview_path = this.lookups[n];
+
+			let o = thumbnail(board_from_path(this.preview_path));
+			document.getElementById("preview").src = o.data;
+
+			let element_to_highlight = document.getElementById(`gamesbox_entry_${n}`);
+			element_to_highlight.className = "highlightedgame";
+
+		} else {
+
+			this.preview_path = null;
+			
+			let o = thumbnail(new_board(19, 19));
+			document.getElementById("preview").src = o.data;
+
+		}
 	},
 
 	open_file_from_index: function(n) {
