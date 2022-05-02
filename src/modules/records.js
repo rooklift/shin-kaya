@@ -4,7 +4,7 @@ const fs = require("fs");
 const path = require("path");
 
 const load_sgf = require("./load_sgf");
-const {replace_all} = require("./utils");
+const { replace_all, safe_html, pad_or_slice } = require("./utils");
 
 const gogod_name_fixes = require("./gogod_name_fixes");
 
@@ -144,6 +144,38 @@ function deduplicate_records(records) {
 	}
 }
 
+function span_string(record, element_id) {
+
+	let result_direction = " ? ";
+	if (record.RE.startsWith("B+")) result_direction = " > ";
+	if (record.RE.startsWith("W+")) result_direction = " < ";
+
+	let ha_string = (record.HA >= 2) ? "(H" + record.HA.toString() + ")" : "";
+
+	let ev_ro_string = record.EV;
+	if (record.RO) {
+		ev_ro_string += ` (${record.RO})`;
+	}
+
+	return `<span id="${element_id}" class="game">` + 
+		safe_html(
+			pad_or_slice(record.DT, 12) +
+			" " +
+			pad_or_slice(record.RE, 8) +
+			" " +
+			pad_or_slice(`${record.PB} ${record.BR}`, 26) + 
+			" " +
+			result_direction +
+			" " +
+			pad_or_slice(`${record.PW} ${record.WR}`, 26) +
+			" " +
+			pad_or_slice(ha_string, 5) + 
+			" " +
+			pad_or_slice(ev_ro_string, 128)
+		) +
+		"</span>";
+}
 
 
-module.exports = {create_record_from_path, sort_records, deduplicate_records};
+
+module.exports = {create_record_from_path, sort_records, deduplicate_records, span_string};

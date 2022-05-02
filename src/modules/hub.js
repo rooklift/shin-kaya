@@ -6,8 +6,7 @@ const config_io = require("./config_io");
 const db = require("./db");
 const {new_board, board_from_path} = require("./board");
 const thumbnail = require("./thumbnail");
-const {sort_records, deduplicate_records} = require("./records");
-const {pad_or_slice, safe_html} = require("./utils");
+const {sort_records, deduplicate_records, span_string} = require("./records");
 
 function init() {
 
@@ -148,39 +147,7 @@ let hub_main_props = {
 		let lines = [];
 
 		for (let [i, record] of records.entries()) {
-
-			let result_direction = " ? ";
-			if (record.RE.startsWith("B+")) result_direction = " > ";
-			if (record.RE.startsWith("W+")) result_direction = " < ";
-
-			let element_id = `gamesbox_entry_${i}`;
-			let ha_string = (record.HA >= 2) ? "(H" + record.HA.toString() + ")" : "";
-
-			let ev_ro_string = record.EV;
-			if (record.RO) {
-				ev_ro_string += ` (${record.RO})`;
-			}
-
-			lines.push(
-				`<span id="${element_id}" class="game">` + 
-				safe_html(
-					pad_or_slice(record.DT, 12) +
-					" " +
-					pad_or_slice(record.RE, 8) +
-					" " +
-					pad_or_slice(`${record.PB} ${record.BR}`, 26) + 
-					" " +
-					result_direction +
-					" " +
-					pad_or_slice(`${record.PW} ${record.WR}`, 26) +
-					" " +
-					pad_or_slice(ha_string, 5) + 
-					" " +
-					pad_or_slice(ev_ro_string, 128)
-				) +
-				"</span>"
-			);
-
+			lines.push(span_string(record, `gamesbox_entry_${i}`));
 			this.lookups.push(record.path + "/" + record.filename);
 		}
 
