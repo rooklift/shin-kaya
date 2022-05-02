@@ -7,7 +7,7 @@ const db = require("./db");
 const {new_board, board_from_path} = require("./board");
 const thumbnail = require("./thumbnail");
 const {sort_records, deduplicate_records} = require("./records");
-const {pad_or_slice} = require("./utils");
+const {pad_or_slice, safe_html} = require("./utils");
 
 function init() {
 
@@ -156,19 +156,19 @@ let hub_main_props = {
 
 			lines.push(
 				`<span id="${element_id}" class="game">` + 
-				pad_or_slice(record.DT, 12) +
+				safe_html(pad_or_slice(record.DT, 12)) +
 				" " +
-				pad_or_slice(record.RE, 8) +
+				safe_html(pad_or_slice(record.RE, 8)) +
 				" " +
-				pad_or_slice(`${record.PB} ${record.BR}`, 26) + 
+				safe_html(pad_or_slice(`${record.PB} ${record.BR}`, 26)) + 
 				" " +
 				result_direction +
 				" " +
-				pad_or_slice(`${record.PW} ${record.WR}`, 26) +
+				safe_html(pad_or_slice(`${record.PW} ${record.WR}`, 26)) +
 				" " +
-				pad_or_slice(ha_string, 5) + 
+				safe_html(pad_or_slice(ha_string, 5)) + 
 				" " +
-				pad_or_slice(record.EV, 128) +
+				safe_html(pad_or_slice(record.EV, 128)) +
 				"</span>"
 			);
 
