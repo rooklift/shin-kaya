@@ -1,7 +1,7 @@
 "use strict";
 
-const {ipcRenderer, shell} = require("electron");
-const {event_path_string} = require("./utils");
+const { ipcRenderer, shell } = require("electron");
+const { event_path_string } = require("./utils");
 
 // Uncaught exceptions should trigger an alert (once only)...
 

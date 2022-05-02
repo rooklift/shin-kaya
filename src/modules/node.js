@@ -2,7 +2,7 @@
 
 const path = require("path");
 const stringify = require("./stringify");
-const {replace_all} = require("./utils");
+const { replace_all } = require("./utils");
 
 // ------------------------------------------------------------------------------------------------
 

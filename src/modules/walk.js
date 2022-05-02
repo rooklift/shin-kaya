@@ -2,7 +2,7 @@
 
 const fs = require("fs");
 const path = require("path");
-const {replace_all} = require("./utils");
+const { replace_all } = require("./utils");
 
 function list_all_files(...args) {
 	let dir_list = args.flat(Infinity);

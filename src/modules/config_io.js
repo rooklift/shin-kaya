@@ -6,7 +6,7 @@ const electron = require("electron");
 const fs = require("fs");
 const path = require("path");
 
-const {get_href_query_val} = require("./utils");
+const { get_href_query_val } = require("./utils");
 
 exports.filename = "config.json";
 

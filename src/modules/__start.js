@@ -1,8 +1,8 @@
 "use strict";
 
-const {ipcRenderer} = require("electron");
+const { ipcRenderer } = require("electron");
 const stringify = require("./stringify");
-const {get_href_query_val} = require("./utils");
+const { get_href_query_val } = require("./utils");
 
 const config_io = require("./config_io");		// Creates global.config
 config_io.load();								// Populates global.config

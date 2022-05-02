@@ -1,6 +1,6 @@
 "use strict";
 
-const {ipcRenderer} = require("electron");
+const { ipcRenderer } = require("electron");
 const db = require("./db");
 
 const multichecks = {

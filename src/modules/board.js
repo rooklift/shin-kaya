@@ -4,7 +4,7 @@
 
 const fs = require("fs");
 const load_sgf = require("./load_sgf");
-const {xy_to_s, points_list} = require("./utils");
+const { xy_to_s, points_list } = require("./utils");
 
 function new_board(width, height, state = null) {
 

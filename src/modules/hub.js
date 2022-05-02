@@ -1,12 +1,12 @@
 "use strict";
 
-const {ipcRenderer, shell} = require("electron");
+const { ipcRenderer, shell } = require("electron");
 
 const config_io = require("./config_io");
 const db = require("./db");
-const {new_board, board_from_path} = require("./board");
 const thumbnail = require("./thumbnail");
-const {sort_records, deduplicate_records, span_string} = require("./records");
+const { new_board, board_from_path } = require("./board");
+const { sort_records, deduplicate_records, span_string } = require("./records");
 
 function init() {
 
