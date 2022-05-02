@@ -156,19 +156,21 @@ let hub_main_props = {
 
 			lines.push(
 				`<span id="${element_id}" class="game">` + 
-				safe_html(pad_or_slice(record.DT, 12)) +
-				" " +
-				safe_html(pad_or_slice(record.RE, 8)) +
-				" " +
-				safe_html(pad_or_slice(`${record.PB} ${record.BR}`, 26)) + 
-				" " +
-				result_direction +
-				" " +
-				safe_html(pad_or_slice(`${record.PW} ${record.WR}`, 26)) +
-				" " +
-				safe_html(pad_or_slice(ha_string, 5)) + 
-				" " +
-				safe_html(pad_or_slice(record.EV, 128)) +
+				safe_html(
+					pad_or_slice(record.DT, 12) +
+					" " +
+					pad_or_slice(record.RE, 8) +
+					" " +
+					pad_or_slice(`${record.PB} ${record.BR}`, 26) + 
+					" " +
+					result_direction +
+					" " +
+					pad_or_slice(`${record.PW} ${record.WR}`, 26) +
+					" " +
+					pad_or_slice(ha_string, 5) + 
+					" " +
+					pad_or_slice(record.EV, 128)
+				) +
 				"</span>"
 			);
 
