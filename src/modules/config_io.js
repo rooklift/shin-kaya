@@ -25,6 +25,7 @@ exports.defaults = {
 	"height": 768,
 	"maxed": false,
 
+	"apply_gogod_fixes": true,
 	"deduplicate": true,
 	"preview_depth": 40,
 	"sgfdir": null,

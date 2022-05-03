@@ -49,12 +49,9 @@ function create_record(root, filepath) {
 
 	// Apply GoGoD name fixes...
 
-	if (gogod_name_fixes[ret.PB]) {
-		ret.PB = gogod_name_fixes[ret.PB];
-	}
-
-	if (gogod_name_fixes[ret.PW]) {
-		ret.PW = gogod_name_fixes[ret.PW];
+	if (config.apply_gogod_fixes) {
+		if (gogod_name_fixes[ret.PB]) ret.PB = gogod_name_fixes[ret.PB];
+		if (gogod_name_fixes[ret.PW]) ret.PW = gogod_name_fixes[ret.PW];
 	}
 
 	return ret;

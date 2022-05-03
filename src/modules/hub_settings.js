@@ -7,6 +7,7 @@ const multichecks = {
 	"preview_depth":		["Database", "Preview depth (initial)"]
 };
 const togglechecks = {
+	"apply_gogod_fixes": 	["Database", "Fix (most) GoGoD names on import"],
 	"deduplicate":			["Database", "Deduplicate search results"]
 };
 

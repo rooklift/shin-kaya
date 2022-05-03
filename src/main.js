@@ -156,6 +156,14 @@ function menu_build() {
 			label: "Database",
 			submenu: [
 				{
+					label: "Fix (most) GoGoD names on import",
+					type: "checkbox",
+					checked: config.apply_gogod_fixes,
+					click: () => {
+						win.webContents.send("toggle", "apply_gogod_fixes");
+					}
+				},
+				{
 					label: "Deduplicate search results",
 					type: "checkbox",
 					checked: config.deduplicate,
