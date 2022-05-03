@@ -167,6 +167,22 @@ function menu_build() {
 					label: "Preview depth",
 					submenu: [
 						{
+							label: "10",
+							type: "checkbox",
+							checked: config.preview_depth === 10,
+							click: () => {
+								win.webContents.send("set", {preview_depth: 10});
+							}
+						},
+						{
+							label: "20",
+							type: "checkbox",
+							checked: config.preview_depth === 20,
+							click: () => {
+								win.webContents.send("set", {preview_depth: 20});
+							}
+						},
+						{
 							label: "30",
 							type: "checkbox",
 							checked: config.preview_depth === 30,
