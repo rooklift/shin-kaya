@@ -178,7 +178,7 @@ let hub_main_props = {
 			}
 		}
 
-		this.preview_node.destroy_tree();					// Thus every return below must be preceded by setting this.preview_node
+		this.preview_node.destroy_tree();					// Since every return below will change the tree, destroy the old one!
 
 		if (typeof n !== "number" || Number.isNaN(n) || n < 0 || n >= this.lookups.length) {
 			this.preview_node = new_node();
