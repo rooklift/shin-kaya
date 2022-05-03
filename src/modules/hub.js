@@ -215,6 +215,26 @@ let hub_main_props = {
 		}
 	},
 
+	prev_node: function() {
+
+		if (!this.preview_node.parent) {
+			return;
+		}
+
+		this.preview_node = this.preview_node.parent;
+		set_thumbnail(this.preview_node);
+	},
+
+	next_node: function() {
+
+		if (this.preview_node.children.length === 0) {
+			return;
+		}
+
+		this.preview_node = this.preview_node.children[0];
+		set_thumbnail(this.preview_node);
+	},
+
 };
 
 

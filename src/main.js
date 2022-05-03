@@ -220,6 +220,23 @@ function menu_build() {
 					type: "separator",
 				},
 				{
+					label: "Preview back",
+					accelerator: "Left",
+					click: () => {
+						win.webContents.send("call", "prev_node");
+					}
+				},
+				{
+					label: "Preview forward",
+					accelerator: "Right",
+					click: () => {
+						win.webContents.send("call", "next_node");
+					}
+				},
+				{
+					type: "separator",
+				},
+				{
 					label: "Select archive folder...",
 					click: () => {
 						electron.dialog.showOpenDialog(win, {properties: ["openDirectory"]})
