@@ -166,7 +166,7 @@ let hub_main_props = {
 		document.getElementById("status").innerHTML = count_string;
 		document.getElementById("gamesbox").innerHTML = lines.join("\n");
 
-		this.set_preview_from_index(null);
+		this.set_preview_from_path(null);
 
 	},
 
