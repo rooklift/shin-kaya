@@ -170,44 +170,53 @@ let hub_main_props = {
 
 	},
 
-	set_preview_from_index: function(n) {					// Can pass null / NaN to set the empty preview
+	set_preview_from_path: function(new_preview_path) {
 
-		if (typeof n === "number" && !Number.isNaN(n) && n >= 0 && n < this.lookups.length) {
-			if (this.preview_path === this.lookups[n]) {
-				return;
-			}
-		}
-
-		this.preview_node.destroy_tree();					// Since every return below will change the tree, destroy the old one!
-
-		if (typeof n !== "number" || Number.isNaN(n) || n < 0 || n >= this.lookups.length) {
-			this.preview_node = new_node();
-			this.preview_path = null;
+		if (this.preview_path === new_preview_path) {
 			return;
 		}
 
-		// There is a valid n...
+		let new_preview_node = null;
 
-		try {
-			this.preview_node = load_sgf(fs.readFileSync(this.lookups[n]));
-			this.preview_path = this.lookups[n];
-		} catch (err) {
-			console.log("While trying to set preview:", err.toString());
-			this.preview_node = new_node();
-			this.preview_path = null;
-			return;
+		if (typeof new_preview_path === "string") {
+			try {
+				new_preview_node = load_sgf(fs.readFileSync(new_preview_path));
+			} catch (err) {
+				console.log("While trying to set preview:", err.toString());
+			}
 		}
 
-		// The load worked... now adjust the depth...
+		this.preview_node.destroy_tree();
 
-		for (let depth = 0; depth < config.preview_depth; depth++) {
-			if (this.preview_node.children.length === 0) {
-				break;
+		if (new_preview_node) {
+
+			this.preview_node = new_preview_node;
+			this.preview_path = new_preview_path;
+
+			for (let depth = 0; depth < config.preview_depth; depth++) {
+				if (this.preview_node.children.length > 0) {
+					this.preview_node = this.preview_node.children[0];
+				} else {
+					break;
+				}
 			}
-			this.preview_node = this.preview_node.children[0];
+
+		} else {
+
+			this.preview_node = new_node();
+			this.preview_path = null;
+
 		}
 
 		set_thumbnail(this.preview_node);
+	},
+
+	set_preview_from_index: function(n) {
+		if (typeof n !== "number" || Number.isNaN(n) || n < 0 || n >= this.lookups.length) {
+			this.set_preview_from_path(null);
+		} else {
+			this.set_preview_from_path(this.lookups[n]);
+		}
 	},
 
 	open_file_from_index: function(n) {
