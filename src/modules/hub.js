@@ -170,7 +170,7 @@ let hub_main_props = {
 
 	},
 
-	set_preview_from_index: function(n) {									// Can pass null / NaN to set the empty preview
+	set_preview_from_index: function(n) {					// Can pass null / NaN to set the empty preview
 
 		if (typeof n === "number" && !Number.isNaN(n) && n >= 0 && n < this.lookups.length) {
 			if (this.preview_path === this.lookups[n]) {
@@ -178,11 +178,11 @@ let hub_main_props = {
 			}
 		}
 
-		this.preview_node.destroy_tree();
-		this.preview_node = new_node();
-		this.preview_path = null;
+		this.preview_node.destroy_tree();					// Thus every return below must be preceded by setting this.preview_node
 
 		if (typeof n !== "number" || Number.isNaN(n) || n < 0 || n >= this.lookups.length) {
+			this.preview_node = new_node();
+			this.preview_path = null;
 			return;
 		}
 
@@ -190,14 +190,15 @@ let hub_main_props = {
 
 		try {
 			this.preview_node = load_sgf(fs.readFileSync(this.lookups[n]));
+			this.preview_path = this.lookups[n];
 		} catch (err) {
 			console.log("While trying to set preview:", err.toString());
-			return;															// Return, leaving the preview_node / preview_path cleared.
+			this.preview_node = new_node();
+			this.preview_path = null;
+			return;
 		}
 
-		// The load worked...
-
-		this.preview_path = this.lookups[n];
+		// The load worked... now adjust the depth...
 
 		for (let depth = 0; depth < config.preview_depth; depth++) {
 			if (this.preview_node.children.length === 0) {
