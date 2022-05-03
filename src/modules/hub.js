@@ -11,8 +11,6 @@ const load_sgf = require("./load_sgf");
 const { new_board } = require("./board");
 const { sort_records, deduplicate_records, span_string } = require("./records");
 
-const dummy_node = new_node();
-
 function init() {
 
 	let hub_prototype = {};
@@ -22,7 +20,7 @@ function init() {
 	let ret = Object.create(hub_prototype);
 	ret.lookups = [];
 	ret.preview_path = null;
-	ret.preview_node = dummy_node;
+	ret.preview_node = new_node();
 
 	set_thumbnail(ret.preview_node);
 
@@ -172,31 +170,40 @@ let hub_main_props = {
 
 	},
 
-	set_preview_from_index: function(n) {
-
-		// Can also pass null / NaN to set the empty preview...
+	set_preview_from_index: function(n) {									// Can pass null / NaN to set the empty preview
 
 		if (typeof n === "number" && !Number.isNaN(n) && n >= 0 && n < this.lookups.length) {
 			if (this.preview_path === this.lookups[n]) {
 				return;
 			}
-			try {
-				this.preview_path = this.lookups[n];
-				this.preview_node = load_sgf(fs.readFileSync(this.preview_path));
-			} catch (err) {
-				console.log("While trying to set preview:", err.toString());
-				this.preview_path = null;
-				this.preview_node = dummy_node;
+		}
+
+		this.preview_node.destroy_tree();
+		this.preview_node = new_node();
+		this.preview_path = null;
+
+		if (typeof n !== "number" || Number.isNaN(n) || n < 0 || n >= this.lookups.length) {
+			return;
+		}
+
+		// There is a valid n...
+
+		try {
+			this.preview_node = load_sgf(fs.readFileSync(this.lookups[n]));
+		} catch (err) {
+			console.log("While trying to set preview:", err.toString());
+			return;															// Return, leaving the preview_node / preview_path cleared.
+		}
+
+		// The load worked...
+
+		this.preview_path = this.lookups[n];
+
+		for (let depth = 0; depth < config.preview_depth; depth++) {
+			if (this.preview_node.children.length === 0) {
+				break;
 			}
-			for (let depth = 0; depth < config.preview_depth; depth++) {
-				if (this.preview_node.children.length === 0) {
-					break;
-				}
-				this.preview_node = this.preview_node.children[0];
-			}
-		} else {
-			this.preview_path = null;
-			this.preview_node = dummy_node;
+			this.preview_node = this.preview_node.children[0];
 		}
 
 		set_thumbnail(this.preview_node);
