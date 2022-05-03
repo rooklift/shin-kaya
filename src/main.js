@@ -199,6 +199,14 @@ function menu_build() {
 							}
 						},
 						{
+							label: "50",
+							type: "checkbox",
+							checked: config.preview_depth === 50,
+							click: () => {
+								win.webContents.send("set", {preview_depth: 50});
+							}
+						},
+						{
 							label: "60",
 							type: "checkbox",
 							checked: config.preview_depth === 60,
