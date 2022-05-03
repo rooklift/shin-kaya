@@ -4,11 +4,11 @@ const { ipcRenderer } = require("electron");
 const db = require("./db");
 
 const multichecks = {
-	"preview_depth":		["Database", "Preview depth (initial)"]
+	"preview_depth":		["View", "Preview depth (initial)"]
 };
 const togglechecks = {
 	"apply_gogod_fixes": 	["Database", "Fix (most) GoGoD names on import"],
-	"deduplicate":			["Database", "Deduplicate search results"]
+	"deduplicate":			["View", "Deduplicate search results"]
 };
 
 for (let menupath of Object.values(multichecks)) {

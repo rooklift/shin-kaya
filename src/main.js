@@ -164,12 +164,55 @@ function menu_build() {
 					}
 				},
 				{
+					type: "separator",
+				},
+				{
+					label: "Select archive folder...",
+					click: () => {
+						electron.dialog.showOpenDialog(win, {properties: ["openDirectory"]})
+						.then(o => {
+							if (Array.isArray(o.filePaths) && o.filePaths.length > 0) {
+								win.webContents.send("set", {sgfdir: o.filePaths[0]});
+							}
+						});
+					}
+				},
+				{
+					label: "Count entries",
+					click: () => {
+						win.webContents.send("call", "count_rows");
+					}
+				},
+				{
+					label: "Update now",
+					click: () => {
+						win.webContents.send("call", "update_db");
+					}
+				},
+				{
+					type: "separator",
+				},
+				{
+					label: "Reset (destroy) database",
+					click: () => {
+						win.webContents.send("call", "reset_db");
+					}
+				}
+			]
+		},
+		{
+			label: "View",
+			submenu: [
+				{
 					label: "Deduplicate search results",
 					type: "checkbox",
 					checked: config.deduplicate,
 					click: () => {
 						win.webContents.send("toggle", "deduplicate");
 					}
+				},
+				{
+					type: "separator",
 				},
 				{
 					label: "Preview depth (initial)",
@@ -233,9 +276,6 @@ function menu_build() {
 					]
 				},
 				{
-					type: "separator",
-				},
-				{
 					label: "Preview back",
 					accelerator: "Left",
 					click: () => {
@@ -249,43 +289,8 @@ function menu_build() {
 						win.webContents.send("call", "next_node");
 					}
 				},
-				{
-					type: "separator",
-				},
-				{
-					label: "Select archive folder...",
-					click: () => {
-						electron.dialog.showOpenDialog(win, {properties: ["openDirectory"]})
-						.then(o => {
-							if (Array.isArray(o.filePaths) && o.filePaths.length > 0) {
-								win.webContents.send("set", {sgfdir: o.filePaths[0]});
-							}
-						});
-					}
-				},
-				{
-					label: "Update now",
-					click: () => {
-						win.webContents.send("call", "update_db");
-					}
-				},
-				{
-					label: "Count entries",
-					click: () => {
-						win.webContents.send("call", "count_rows");
-					}
-				},
-				{
-					type: "separator",
-				},
-				{
-					label: "Reset (destroy) database",
-					click: () => {
-						win.webContents.send("call", "reset_db");
-					}
-				}
 			]
-		}
+		},
 	];
 
 	return electron.Menu.buildFromTemplate(template);
