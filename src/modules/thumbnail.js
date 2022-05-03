@@ -1,10 +1,16 @@
 "use strict";
 
-module.exports = function(board, square_size = 11) {
+const { board_from_node } = require("./board");
 
-	if (!board) {
-		throw new Error("thumbnail.js: board must be valid");
+module.exports = function(node, square_size = 11) {
+
+	// Unlike Ogatak, this actually sets the thumbnail in the DOM when called.
+
+	if (!node) {
+		throw new Error("thumbnail.js: node must be valid");
 	}
+
+	let board = board_from_node(node);
 
 	let c = document.createElement("canvas");
 
@@ -63,9 +69,5 @@ module.exports = function(board, square_size = 11) {
 		}
 	}
 
-	return {
-		data: c.toDataURL("image/png"),
-		width: c.width,
-		height: c.height
-	};
+	document.getElementById("preview").src = c.toDataURL("image/png");
 };

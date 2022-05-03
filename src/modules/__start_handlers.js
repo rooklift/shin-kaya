@@ -24,10 +24,29 @@ document.getElementById("gamesbox").addEventListener("dblclick", (event) => {
 });
 
 document.getElementById("gamesbox").addEventListener("click", (event) => {
+
+	// First clear any highlight that exists...
+
+	let highlighted = document.getElementsByClassName("highlightedgame")[0];
+
+	if (highlighted) {
+		highlighted.className = "";
+	}
+
+	// Now deal with the click...
+
 	let suffix = event_path_string(event, "gamesbox_entry_");
+
 	if (suffix) {
+
 		let n = parseInt(suffix, 10);
 		hub.set_preview_from_index(n);
+
+		// Add the new highlight...
+
+		let element_to_highlight = document.getElementById(`gamesbox_entry_${n}`);
+		element_to_highlight.className = "highlightedgame";
+
 	}
 });
 

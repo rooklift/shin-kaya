@@ -1,12 +1,17 @@
 "use strict";
 
 const { ipcRenderer, shell } = require("electron");
+const fs = require("fs");
 
 const config_io = require("./config_io");
 const db = require("./db");
-const thumbnail = require("./thumbnail");
-const { new_board, board_from_path } = require("./board");
+const new_node = require("./node");
+const set_thumbnail = require("./thumbnail");
+const load_sgf = require("./load_sgf");
+const { new_board } = require("./board");
 const { sort_records, deduplicate_records, span_string } = require("./records");
+
+const dummy_node = new_node();
 
 function init() {
 
@@ -17,6 +22,9 @@ function init() {
 	let ret = Object.create(hub_prototype);
 	ret.lookups = [];
 	ret.preview_path = null;
+	ret.preview_node = dummy_node;
+
+	set_thumbnail(ret.preview_node);
 
 	return ret;
 }
@@ -164,31 +172,34 @@ let hub_main_props = {
 
 	},
 
-	set_preview_from_index: function(n) {			// Or can also pass null to set the empty preview
+	set_preview_from_index: function(n) {
 
-		let highlighted = document.getElementsByClassName("highlightedgame")[0];
-		if (highlighted) {
-			highlighted.className = "";
-		}
+		// Can also pass null / NaN to set the empty preview...
 
 		if (typeof n === "number" && !Number.isNaN(n) && n >= 0 && n < this.lookups.length) {
-
-			this.preview_path = this.lookups[n];
-
-			let o = thumbnail(board_from_path(this.preview_path));
-			document.getElementById("preview").src = o.data;
-
-			let element_to_highlight = document.getElementById(`gamesbox_entry_${n}`);
-			element_to_highlight.className = "highlightedgame";
-
+			if (this.preview_path === this.lookups[n]) {
+				return;
+			}
+			try {
+				this.preview_path = this.lookups[n];
+				this.preview_node = load_sgf(fs.readFileSync(this.preview_path));
+			} catch (err) {
+				console.log("While trying to set preview:", err.toString());
+				this.preview_path = null;
+				this.preview_node = dummy_node;
+			}
+			for (let depth = 0; depth < config.preview_depth; depth++) {
+				if (this.preview_node.children.length === 0) {
+					break;
+				}
+				this.preview_node = this.preview_node.children[0];
+			}
 		} else {
-
 			this.preview_path = null;
-
-			let o = thumbnail(new_board(19, 19));
-			document.getElementById("preview").src = o.data;
-
+			this.preview_node = dummy_node;
 		}
+
+		set_thumbnail(this.preview_node);
 	},
 
 	open_file_from_index: function(n) {

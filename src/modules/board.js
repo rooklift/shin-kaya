@@ -240,7 +240,7 @@ let board_prototype = {
 
 };
 
-
+// ------------------------------------------------------------------------------------------------
 
 function board_from_node(nd) {
 
@@ -280,30 +280,6 @@ function board_from_node(nd) {
 	return board;
 }
 
-function board_from_path(filepath) {
-
-	let root;
-
-	try {
-		let buf = fs.readFileSync(filepath);
-		root = load_sgf(buf);
-	} catch (err) {
-		return new_board(19, 19);
-	}
-
-	let node = root;
-
-	for (let n = 0; n < config.preview_depth; n++) {
-		if (node.children.length > 0) {
-			node = node.children[0];
-		} else {
-			break;
-		}
-	}
-
-	return board_from_node(node);
-}
 
 
-
-module.exports = {new_board, board_from_node, board_from_path};
+module.exports = {new_board, board_from_node};
