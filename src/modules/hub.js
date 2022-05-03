@@ -172,6 +172,8 @@ let hub_main_props = {
 
 	set_preview_from_path: function(new_preview_path) {
 
+		// Note: this.preview_node must end up being a valid node, never null.
+
 		if (this.preview_path === new_preview_path) {
 			return;
 		}
