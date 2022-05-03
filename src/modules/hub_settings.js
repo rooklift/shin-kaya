@@ -4,7 +4,7 @@ const { ipcRenderer } = require("electron");
 const db = require("./db");
 
 const multichecks = {
-	"preview_depth":		["Database", "Preview depth"]
+	"preview_depth":		["Database", "Preview depth (initial)"]
 };
 const togglechecks = {
 	"deduplicate":			["Database", "Deduplicate search results"]

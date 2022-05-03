@@ -164,7 +164,7 @@ function menu_build() {
 					}
 				},
 				{
-					label: "Preview depth",
+					label: "Preview depth (initial)",
 					submenu: [
 						{
 							label: "10",
