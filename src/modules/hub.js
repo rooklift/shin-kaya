@@ -206,10 +206,10 @@ let hub_main_props = {
 	},
 
 	set_preview_from_index: function(n) {
-		if (typeof n !== "number" || Number.isNaN(n) || n < 0 || n >= this.lookups.length) {
-			this.set_preview_from_path(null);
-		} else {
+		if (typeof n === "number" && !Number.isNaN(n) && n >= 0 && n < this.lookups.length) {
 			this.set_preview_from_path(this.lookups[n]);
+		} else {
+			this.set_preview_from_path(null);
 		}
 	},
 
