@@ -176,36 +176,28 @@ let hub_main_props = {
 			return;
 		}
 
-		let new_preview_node = null;
+		this.preview_node.destroy_tree();
 
 		if (typeof new_preview_path === "string") {
 			try {
-				new_preview_node = load_sgf(fs.readFileSync(new_preview_path));
+				this.preview_node = load_sgf(fs.readFileSync(new_preview_path));
+				this.preview_path = new_preview_path;
 			} catch (err) {
 				console.log("While trying to set preview:", err.toString());
+				this.preview_node = new_node();
+				this.preview_path = null;
 			}
-		}
-
-		this.preview_node.destroy_tree();
-
-		if (new_preview_node) {
-
-			this.preview_node = new_preview_node;
-			this.preview_path = new_preview_path;
-
-			for (let depth = 0; depth < config.preview_depth; depth++) {
-				if (this.preview_node.children.length > 0) {
-					this.preview_node = this.preview_node.children[0];
-				} else {
-					break;
-				}
-			}
-
 		} else {
-
 			this.preview_node = new_node();
 			this.preview_path = null;
+		}
 
+		for (let depth = 0; depth < config.preview_depth; depth++) {
+			if (this.preview_node.children.length > 0) {
+				this.preview_node = this.preview_node.children[0];
+			} else {
+				break;
+			}
 		}
 
 		set_thumbnail(this.preview_node);
