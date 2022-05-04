@@ -97,8 +97,8 @@ let hub_main_props = {
 		this.lookups = [];
 
 		let binding = {
-			path:     "%" + document.getElementById("pth").value + "%",
-			filename: "%" + document.getElementById("fname").value + "%",
+			path:     "%" + document.getElementById("path").value + "%",
+			filename: "%" + document.getElementById("filename").value + "%",
 			dyer:     "%" + document.getElementById("dyer").value + "%", 
 			P1:       "%" + document.getElementById("P1").value + "%",
 			P2:       "%" + document.getElementById("P2").value + "%",
