@@ -171,14 +171,14 @@ function span_string(record, element_id) {
 		ev_ro_string += ` (${record.RO})`;
 	}
 
-	return `<span id="${element_id}" class="game">` + 
+	return `<span id="${element_id}" class="game">` + 				// We want to guarantee the whitespace exists hence all the " "
 		safe_html(
 			pad_or_slice(record.DT, 12) +
 			" " +
 			pad_or_slice(record.RE, 7) +
 			" " +
-			pad_or_slice(record.movecount, 4, true) +
-			"  " +
+			pad_or_slice(record.movecount, 5, true) +
+			" " +
 			pad_or_slice(ha_string, 3) + 
 			" " +
 			pad_or_slice(`${record.PB} ${record.BR}`, 26) + 
