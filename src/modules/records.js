@@ -10,40 +10,29 @@ const gogod_name_fixes = require("./gogod_name_fixes");
 
 function create_record(root, filepath) {
 
-	let ret = {};
-
-	// Strings...
-
-	for (let key of ["EV", "RO", "PB", "PW", "BR", "WR"]) {
-		ret[key] = root.get(key);										// get() returns "" if absent, which is what we want.
-	}
-
-	ret.DT = canonicaldate(root.get("DT"));
-	ret.RE = canonicalresult(root.get("RE"));
-
-	// Ints...
+	let ret = {
+		path:      path.dirname(filepath),				// path does not include filename
+		filename:  path.basename(filepath)
+		dyer:      root.dyer(),
+		movecount: move_count(root),
+		SZ:        19,									// Maybe changed below.
+		HA:        0,									// Maybe changed below.
+		PB:        root.get("PB"),
+		PW:        root.get("PW"),
+		BR:        root.get("BR"),
+		WR:        root.get("WR"),
+		RE:        canonicalresult(root.get("RE")),
+		DT:        canonicaldate(root.get("DT")),
+		EV:        root.get("EV"),
+		RO:        root.get("RO"),
+	};
 
 	for (let key of ["HA", "SZ"]) {
-
-		let s = root.get(key);
-		let i = parseInt(s, 10);
-
+		let i = parseInt(root.get(key), 10);
 		if (!Number.isNaN(i)) {
 			ret[key] = i;
-		} else if (key === "SZ") {
-			ret[key] = 19;
-		} else {
-			ret[key] = 0;
 		}
 	}
-
-	ret.movecount = move_count(root);
-
-	// Misc strings...
-	
-	ret.dyer = root.dyer();
-	ret.path = path.dirname(filepath);									// path does not include filename
-	ret.filename = path.basename(filepath);
 
 	// For consistency, lets always use / as a path separator...
 
