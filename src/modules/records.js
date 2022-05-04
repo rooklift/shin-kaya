@@ -27,7 +27,7 @@ function create_record(root, filepath) {
 		RO:        root.get("RO"),
 	};
 
-	for (let key of ["HA", "SZ"]) {
+	for (let key of ["SZ", "HA"]) {
 		let i = parseInt(root.get(key), 10);
 		if (!Number.isNaN(i)) {
 			ret[key] = i;
