@@ -60,22 +60,23 @@ exports.drop_table = function() {
 
 function create_table() {
 	try {
-	    let st = current_db.prepare(`CREATE TABLE Games (
-	        path text,
-	        filename text,
-	        dyer text,
-	        movecount int,
-	        SZ int,
-	        HA int,
-	        PB text,
-	        PW text,
-	        BR text,
-	        WR text,
-	        RE text,
-	        DT text,
-	        EV text,
-	        RO text)`
-	    );
+		let st = current_db.prepare(
+		`CREATE TABLE Games (
+			path      text,
+			filename  text,
+			dyer      text,
+			movecount int,
+			SZ        int,
+			HA        int,
+			PB        text,
+			PW        text,
+			BR        text,
+			WR        text,
+			RE        text,
+			DT        text,
+			EV        text,
+			RO        text)`
+		);
 		st.run();
 	} catch (err) {
 		// It already exists
@@ -208,7 +209,7 @@ function continue_additions() {
 		INSERT INTO Games (
 			path, filename, dyer, movecount, SZ, HA, PB, PW, BR, WR, RE, DT, EV, RO
 		) VALUES (
-			?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
+			@path, @filename, @dyer, @movecount, @SZ, @HA, @PB, @PW, @BR, @WR, @RE, @DT, @EV, @RO
 		)
 	`);
 
@@ -216,16 +217,16 @@ function continue_additions() {
 
 		for (let filepath of new_files.slice(0, ADDITION_BATCH_SIZE)) {
 
-			let r;
+			let record;
 
 			try {
-				r = create_record_from_path(filepath);
+				record = create_record_from_path(filepath);
 			} catch (err) {
 				console.log(err);
 				continue;
 			}
 			
-			st.run(r.path, r.filename, r.dyer, r.movecount, r.SZ, r.HA, r.PB, r.PW, r.BR, r.WR, r.RE, r.DT, r.EV, r.RO);
+			st.run(record);
 		}
 	});
 
