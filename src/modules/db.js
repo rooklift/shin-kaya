@@ -57,6 +57,7 @@ exports.drop_table = function() {
 };
 
 // ------------------------------------------------------------------------------------------------
+// If this gets changed, must also change create_record() and continue_additions()
 
 function create_table() {
 	try {
