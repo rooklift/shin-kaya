@@ -96,34 +96,35 @@ let hub_main_props = {
 
 		this.lookups = [];
 
-		let pth = "%" + document.getElementById("pth").value + "%";
-		let fname = "%" + document.getElementById("fname").value + "%";
-		let dyer = "%" + document.getElementById("dyer").value + "%";
-
-		let P1 = "%" + document.getElementById("P1").value + "%";
-		let P2 = "%" + document.getElementById("P2").value + "%";
-		let DT = "%" + document.getElementById("DT").value + "%";
-		let EV = "%" + document.getElementById("EV").value + "%";
-		let RO = "%" + document.getElementById("RO").value + "%";
+		let binding = {
+			path:     "%" + document.getElementById("pth").value + "%",
+			filename: "%" + document.getElementById("fname").value + "%",
+			dyer:     "%" + document.getElementById("dyer").value + "%", 
+			P1:       "%" + document.getElementById("P1").value + "%",
+			P2:       "%" + document.getElementById("P2").value + "%",
+			DT:       "%" + document.getElementById("DT").value + "%",
+			EV:       "%" + document.getElementById("EV").value + "%",
+			RO:       "%" + document.getElementById("RO").value + "%",
+		};
 
 		let st = db.current().prepare(`
 			SELECT * FROM Games WHERE
-				(path like ?)
+				(path like @path)
 					and
-				(filename like ?)
+				(filename like @filename)
 					and
-				(dyer like ?)
+				(dyer like @dyer)
 					and
-				((PB like ? and PW like ?) or (PB like ? and PW like ?))
+				((PB like @P1 and PW like @P2) or (PB like @P2 and PW like @P1))
 					and
-				(DT like ?)
+				(DT like @DT)
 					and
-				(EV like ?)
+				(EV like @EV)
 					and
-				(RO like ?)
+				(RO like @RO)
 		`);
 
-		let iterator = st.iterate(pth, fname, dyer, P1, P2, P2, P1, DT, EV, RO);
+		let iterator = st.iterate(binding);
 
 		let records = [];
 		let truncated = false;
