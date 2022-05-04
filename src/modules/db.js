@@ -57,6 +57,11 @@ exports.drop_table = function() {
 // If this gets changed, must also change create_record() and continue_additions()
 
 function create_table() {
+
+	if (!current_db) {
+		return;
+	}
+
 	try {
 		let st = current_db.prepare(
 		`CREATE TABLE Games (
