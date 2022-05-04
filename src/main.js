@@ -184,9 +184,18 @@ function menu_build() {
 					}
 				},
 				{
+					type: "separator",
+				},
+				{
 					label: "Update now",
 					click: () => {
 						win.webContents.send("call", "update_db");
+					}
+				},
+				{
+					label: "Stop update",
+					click: () => {
+						win.webContents.send("call", "stop_update");
 					}
 				},
 				{
