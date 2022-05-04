@@ -64,6 +64,7 @@ function create_table() {
 	        path text,
 	        filename text,
 	        dyer text,
+	        movecount int,
 	        SZ int,
 	        HA int,
 	        PB text,
@@ -205,9 +206,9 @@ function continue_additions() {
 
 	let st = current_db.prepare(`
 		INSERT INTO Games (
-			path, filename, dyer, SZ, HA, PB, PW, BR, WR, RE, DT, EV, RO
+			path, filename, dyer, movecount, SZ, HA, PB, PW, BR, WR, RE, DT, EV, RO
 		) VALUES (
-			?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
+			?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
 		)
 	`);
 
@@ -224,7 +225,7 @@ function continue_additions() {
 				continue;
 			}
 			
-			st.run(r.path, r.filename, r.dyer, r.SZ, r.HA, r.PB, r.PW, r.BR, r.WR, r.RE, r.DT, r.EV, r.RO);
+			st.run(r.path, r.filename, r.dyer, r.movecount, r.SZ, r.HA, r.PB, r.PW, r.BR, r.WR, r.RE, r.DT, r.EV, r.RO);
 		}
 	});
 

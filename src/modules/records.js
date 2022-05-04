@@ -36,6 +36,10 @@ function create_record(root, filepath) {
 			ret[key] = 0;
 		}
 	}
+
+	ret.movecount = move_count(root);
+
+	// Misc strings...
 	
 	ret.dyer = root.dyer();
 	ret.path = path.dirname(filepath);									// path does not include filename
@@ -55,6 +59,21 @@ function create_record(root, filepath) {
 	}
 
 	return ret;
+}
+
+function move_count(root) {
+	let node = root;
+	let count = 0;
+	while (true) {
+		if (node.has_key("B") || node.has_key("W")) {
+			count++;
+		}
+		if (node.children.length > 0) {
+			node = node.children[0];
+		} else {
+			return count;
+		}
+	}
 }
 
 function create_record_from_path(filepath) {							// Can throw
@@ -133,10 +152,8 @@ function deduplicate_records(records) {
 	});
 
 	for (let n = records.length - 1; n > 0; n--) {
-		if (records[n].dyer === records[n - 1].dyer) {
-			if (records[n].DT === records[n - 1].DT) {
-				records.splice(n, 1);						// In place
-			}
+		if (records[n].dyer === records[n - 1].dyer && records[n].DT === records[n - 1].DT && records[n].movecount === records[n - 1].movecount) {
+			records.splice(n, 1);						// In place
 		}
 	}
 }
@@ -147,7 +164,7 @@ function span_string(record, element_id) {
 	if (record.RE.startsWith("B+")) result_direction = " > ";
 	if (record.RE.startsWith("W+")) result_direction = " < ";
 
-	let ha_string = (record.HA >= 2) ? "(H" + record.HA.toString() + ")" : "";
+	let ha_string = (record.HA >= 2) ? `H${record.HA}` : "";
 
 	let ev_ro_string = record.EV;
 	if (record.RO) {
@@ -158,15 +175,17 @@ function span_string(record, element_id) {
 		safe_html(
 			pad_or_slice(record.DT, 12) +
 			" " +
-			pad_or_slice(record.RE, 8) +
+			pad_or_slice(record.RE, 7) +
+			" " +
+			pad_or_slice(record.movecount, 4, true) +
+			"  " +
+			pad_or_slice(ha_string, 3) + 
 			" " +
 			pad_or_slice(`${record.PB} ${record.BR}`, 26) + 
 			" " +
 			result_direction +
 			" " +
 			pad_or_slice(`${record.PW} ${record.WR}`, 26) +
-			" " +
-			pad_or_slice(ha_string, 5) + 
 			" " +
 			pad_or_slice(ev_ro_string, 128)
 		) +
