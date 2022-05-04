@@ -14,9 +14,6 @@ const ADDITION_BATCH_SIZE = 47;
 
 let current_db = null;
 
-let missing_files = [];					// These 2 arrays should only be non-empty iff there is an update in progress.
-let new_files = [];
-
 let work_timeout_id = null;				// Return val from setTimeout, so we can cancel any work in progress.
 
 // ------------------------------------------------------------------------------------------------
@@ -88,14 +85,10 @@ function create_table() {
 // Update code...
 
 exports.stop_update = function() {
-
 	if (work_timeout_id !== null) {
 		clearTimeout(work_timeout_id);
 		work_timeout_id = null;
 	}
-
-	missing_files = [];
-	new_files = [];
 };
 
 exports.update = function() {
@@ -139,6 +132,9 @@ function really_update() {
 
 	// Make the diffs...
 
+	let missing_files = [];
+	let new_files = [];
+
 	for (let key of Object.keys(db_set)) {
 		if (!file_set[key]) {
 			missing_files.push(key);
@@ -155,56 +151,56 @@ function really_update() {
 	if (missing_files.length > 0 || new_files.length > 0) {
 		work_timeout_id = setTimeout(() => {
 			work_timeout_id = null;
-			continue_work(current_db, missing_files.length, new_files.length);
+			continue_work(current_db, missing_files, new_files, 0, 0);
 		}, 5);
 	} else {
 		document.getElementById("status").innerHTML = `No changes made`;
 	}
 }
 
-function continue_work(database, total_deletions, total_additions) {
+function continue_work(database, missing_files, new_files, missing_off, new_off) {
 
 	if (database !== current_db) {
 		throw new Error("continue_work(): database changed unexpectedly");
 	}
 
-	document.getElementById("status").innerHTML = `In progress, ${missing_files.length + new_files.length} updates remaining...`;
-
-	if (missing_files.length > 0) {
-		continue_deletions();
-	} else if (new_files.length > 0) {
-		continue_additions();
+	if (missing_off < missing_files.length) {
+		document.getElementById("status").innerHTML = `In progress, ${missing_files.length - missing_off} deletions remaining...`;
+		continue_deletions(missing_files.slice(missing_off, missing_off + DELETION_BATCH_SIZE));
+		missing_off += DELETION_BATCH_SIZE;
+	} else if (new_off < new_files.length) {
+		document.getElementById("status").innerHTML = `In progress, ${new_files.length - new_off} additions remaining...`;
+		continue_additions(new_files.slice(new_off, new_off + ADDITION_BATCH_SIZE));
+		new_off += ADDITION_BATCH_SIZE;
 	} else {
-		throw new Error("continue_work(): file arrays were empty");
+		throw new Error("continue_work(): offsets indicated work was already complete");
 	}
 
-	if (missing_files.length > 0 || new_files.length > 0) {
+	if (missing_off < missing_files.length || new_off < new_files.length) {
 		work_timeout_id = setTimeout(() => {
 			work_timeout_id = null;
-			continue_work(database, total_deletions, total_additions);
+			continue_work(database, missing_files, new_files, missing_off, new_off)
 		}, 5);
 	} else {
-		document.getElementById("status").innerHTML = `Update completed - deletions: ${total_deletions}, additions: ${total_additions}`;
+		document.getElementById("status").innerHTML = `Update completed - deletions: ${missing_files.length}, additions: ${new_files.length}`;
 	}
 
 }
 
-function continue_deletions() {
+function continue_deletions(arr) {
 
 	let st = current_db.prepare(`DELETE FROM Games WHERE path = ? and filename = ?`);
 
 	let delete_missing = current_db.transaction(() => {
-		for (let filepath of missing_files.slice(0, DELETION_BATCH_SIZE)) {
+		for (let filepath of arr) {
 			st.run(path.dirname(filepath), path.basename(filepath));
 		}
 	});
 
 	delete_missing();
-
-	missing_files = missing_files.slice(DELETION_BATCH_SIZE);		// Possibly clearing the array entirely.
 }
 
-function continue_additions() {
+function continue_additions(arr) {
 
 	let st = current_db.prepare(`
 		INSERT INTO Games (
@@ -216,7 +212,7 @@ function continue_additions() {
 
 	let add_new = current_db.transaction(() => {
 
-		for (let filepath of new_files.slice(0, ADDITION_BATCH_SIZE)) {
+		for (let filepath of arr) {
 
 			let record;
 
@@ -232,6 +228,4 @@ function continue_additions() {
 	});
 
 	add_new();
-
-	new_files = new_files.slice(ADDITION_BATCH_SIZE);				// Possibly clearing the array entirely.
 }
