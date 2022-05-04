@@ -12,7 +12,7 @@ function create_record(root, filepath) {
 
 	let ret = {
 		path:      path.dirname(filepath),				// path does not include filename
-		filename:  path.basename(filepath)
+		filename:  path.basename(filepath),
 		dyer:      root.dyer(),
 		movecount: move_count(root),
 		SZ:        19,									// Maybe changed below.
