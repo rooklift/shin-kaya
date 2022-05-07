@@ -112,11 +112,11 @@ exports.update = function() {
 
 	work_timeout_id = setTimeout(() => {
 		work_timeout_id = null;
-		really_update(current_db);
+		really_update(current_db, config.sgfdir);
 	}, 5);
 };
 
-function really_update(database) {
+function really_update(database, archivepath) {
 
 	if (database !== current_db) {
 		throw new Error("really_update(): database changed unexpectedly");
@@ -134,7 +134,7 @@ function really_update(database) {
 	// Make a set of all files in the directory...
 	
 	let file_set = Object.create(null);
-	let files = list_all_files(config.sgfdir, "");
+	let files = list_all_files(archivepath, "");
 	for (let f of files) {
 		file_set[f] = true;
 	}
@@ -160,14 +160,14 @@ function really_update(database) {
 	if (missing_files.length > 0 || new_files.length > 0) {
 		work_timeout_id = setTimeout(() => {
 			work_timeout_id = null;
-			continue_work(current_db, missing_files, new_files, 0, 0);
+			continue_work(current_db, archivepath, missing_files, new_files, 0, 0);
 		}, 5);
 	} else {
 		document.getElementById("status").innerHTML = `No changes made`;
 	}
 }
 
-function continue_work(database, missing_files, new_files, missing_off, new_off) {
+function continue_work(database, archivepath, missing_files, new_files, missing_off, new_off) {
 
 	if (database !== current_db) {
 		throw new Error("continue_work(): database changed unexpectedly");
@@ -179,7 +179,7 @@ function continue_work(database, missing_files, new_files, missing_off, new_off)
 		missing_off += DELETION_BATCH_SIZE;
 	} else if (new_off < new_files.length) {
 		document.getElementById("status").innerHTML = `In progress, ${new_files.length - new_off} additions remaining...`;
-		continue_additions(new_files.slice(new_off, new_off + ADDITION_BATCH_SIZE));
+		continue_additions(archivepath, new_files.slice(new_off, new_off + ADDITION_BATCH_SIZE));
 		new_off += ADDITION_BATCH_SIZE;
 	} else {
 		throw new Error("continue_work(): offsets indicated work was already complete");
@@ -188,7 +188,7 @@ function continue_work(database, missing_files, new_files, missing_off, new_off)
 	if (missing_off < missing_files.length || new_off < new_files.length) {
 		work_timeout_id = setTimeout(() => {
 			work_timeout_id = null;
-			continue_work(current_db, missing_files, new_files, missing_off, new_off)
+			continue_work(current_db, archivepath, missing_files, new_files, missing_off, new_off)
 		}, 5);
 	} else {
 		document.getElementById("status").innerHTML = `Update completed - deletions: ${missing_files.length}, additions: ${new_files.length}`;
@@ -209,7 +209,7 @@ function continue_deletions(arr) {
 	delete_missing();
 }
 
-function continue_additions(arr) {
+function continue_additions(archivepath, arr) {
 
 	let st = current_db.prepare(`
 		INSERT INTO Games (
@@ -226,7 +226,7 @@ function continue_additions(arr) {
 			let record;
 
 			try {
-				record = create_record_from_path(config.sgfdir, relpath);
+				record = create_record_from_path(archivepath, relpath);
 			} catch (err) {
 				console.log(err);
 				continue;
