@@ -4,7 +4,7 @@ const fs = require("fs");
 const slashpath = require("./slashpath");
 const { replace_all } = require("./utils");
 
-function list_all_files(archivepath, relpath) {
+function list_all_files(archivepath, relpath) {								// Returns a list of paths relative to the archive path.
 	let ret = [];
 	let read;
 	try {
