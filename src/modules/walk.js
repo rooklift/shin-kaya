@@ -1,7 +1,7 @@
 "use strict";
 
 const fs = require("fs");
-const path = require("path");
+const slashpath = require("./slashpath");
 const { replace_all } = require("./utils");
 
 function list_all_files(...args) {
@@ -16,13 +16,9 @@ function list_all_files(...args) {
 			continue;
 		}
 		for (let o of read) {
-			let fullpath = path.join(d, o);
+			let fullpath = slashpath.join(d, o);
 			if (o.toLowerCase().endsWith(".sgf")) {								// We think this is a file...
-				if (global.process && global.process.platform === "win32") {
-					ret.push(replace_all(fullpath, "\\", "/"));
-				} else {
-					ret.push(fullpath);
-				}
+				ret.push(fullpath);
 			} else if (o.toLowerCase().endsWith(".db")) {
 				console.log(`Skipping ${fullpath}`);
 			} else if (o.toLowerCase().endsWith("journal")) {
