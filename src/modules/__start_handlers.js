@@ -40,7 +40,7 @@ document.getElementById("gamesbox").addEventListener("click", (event) => {
 	if (suffix) {
 
 		let n = parseInt(suffix, 10);
-		hub.set_preview_from_index(n);			// It's ok if n is NaN
+		hub.set_preview_from_index(n);
 
 		// Add the new highlight...
 
