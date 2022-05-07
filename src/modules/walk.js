@@ -14,15 +14,15 @@ function list_all_files(archivepath, relpath) {								// Returns a list of path
 		return ret;
 	}
 	for (let o of read) {
-		let file_relpath = slashpath.join(relpath, o);
+		let new_relpath = slashpath.join(relpath, o);
 		if (o.toLowerCase().endsWith(".sgf")) {								// We think this is a file...
-			ret.push(file_relpath);
+			ret.push(new_relpath);
 		} else if (o.toLowerCase().endsWith(".db")) {
-			console.log(`Skipping ${file_relpath}`);
+			console.log(`Skipping ${new_relpath}`);
 		} else if (o.toLowerCase().endsWith("journal")) {
-			console.log(`Skipping ${file_relpath}`);
+			console.log(`Skipping ${new_relpath}`);
 		} else {															// We think this is a directory...
-			ret = ret.concat(list_all_files(archivepath, file_relpath));
+			ret = ret.concat(list_all_files(archivepath, new_relpath));
 		}
 	}
 	return ret;
