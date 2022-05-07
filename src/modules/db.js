@@ -4,8 +4,9 @@
 // slightly tricky business of updating a database. It does not deal with normal queries.
 
 const fs = require("fs");
-const path = require("path");
 const sql = require("better-sqlite3");
+
+const slashpath = require("./slashpath");
 const { list_all_files } = require("./walk");
 const { create_record_from_path } = require("./records");
 
@@ -36,7 +37,7 @@ exports.connect = function() {			// Using config.sgfdir
 		return;
 	}
 
-	current_db = sql(path.join(config.sgfdir, "shin-kaya.db"));
+	current_db = sql(slashpath.join(config.sgfdir, "shin-kaya.db"));
 	create_table();
 };
 
@@ -128,7 +129,7 @@ function really_update(database) {
 	let st = current_db.prepare("SELECT path, filename FROM Games");
 	let db_objects = st.all();
 	for (let o of db_objects) {
-		db_set[o.path + "/" + o.filename] = true;		// Not using path.join(), we want to consistently join with "/"
+		db_set[slashpath.join(o.path, o.filename)] = true;
 	}
 
 	// Make a set of all files in the directory...
@@ -202,7 +203,7 @@ function continue_deletions(arr) {
 
 	let delete_missing = current_db.transaction(() => {
 		for (let filepath of arr) {
-			st.run(path.dirname(filepath), path.basename(filepath));
+			st.run(slashpath.dirname(filepath), slashpath.basename(filepath));
 		}
 	});
 
