@@ -1,6 +1,5 @@
 "use strict";
 
-const path = require("path");
 const stringify = require("./stringify");
 const { replace_all } = require("./utils");
 
