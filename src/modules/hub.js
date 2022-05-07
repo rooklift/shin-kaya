@@ -88,14 +88,11 @@ let hub_main_props = {
 		document.getElementById("status").innerHTML = `Database has ${count} entries - ${config.sgfdir}`;
 	},
 
-	search: function() {
+	get_iterator: function() {
 
 		if (!db.current()) {
-			this.display_no_connection();
-			return;
+			return null;
 		}
-
-		this.lookups = [];
 
 		let binding = {
 			relpath:  "%" + document.getElementById("relpath").value + "%",
@@ -122,12 +119,37 @@ let hub_main_props = {
 				(RO like @RO)
 		`);
 
-		let iterator = st.iterate(binding);
+		return st.iterate(binding);
+	},
+
+	get_all: function() {			// For debugging, returns the actual SQL records.
+
+		if (!db.current()) {
+			return null;
+		}
+
+		let records = [];
+
+		for (let o of this.get_iterator()) {
+			records.push(o);
+		}
+
+		return records;
+	},
+
+	search: function() {
+
+		if (!db.current()) {
+			this.display_no_connection();
+			return;
+		}
+
+		this.lookups = [];
 
 		let records = [];
 		let truncated = false;
 
-		for (let o of iterator) {
+		for (let o of this.get_iterator()) {
 			records.push(o);
 			if (records.length >= 9999) {
 				truncated = true;
