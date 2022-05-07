@@ -1,7 +1,7 @@
 "use strict";
 
 const { ipcRenderer, shell } = require("electron");
-const fs = require("fs");
+const fs = require("fs/promises");
 
 const config_io = require("./config_io");
 const db = require("./db");
@@ -199,31 +199,49 @@ let hub_main_props = {
 			return;
 		}
 
-		this.preview_node.destroy_tree();
-
-		if (typeof new_preview_path === "string") {
-			try {
-				this.preview_node = load_sgf(fs.readFileSync(new_preview_path));
-				this.preview_path = new_preview_path;
-			} catch (err) {
-				console.log("While trying to set preview:", err.toString());
-				this.preview_node = new_node();
-				this.preview_path = null;
-			}
-		} else {
+		if (typeof new_preview_path !== "string") {
+			this.preview_node.destroy_tree();
 			this.preview_node = new_node();
 			this.preview_path = null;
+			set_thumbnail(this.preview_node);
+			return;
 		}
 
-		for (let depth = 0; depth < config.preview_depth; depth++) {
-			if (this.preview_node.children.length > 0) {
-				this.preview_node = this.preview_node.children[0];
-			} else {
-				break;
+		// Note this.preview_path is set instantly, before the async load completes...
+
+		this.preview_path = new_preview_path;
+
+		fs.readFile(new_preview_path).then(buf => {					// the read itself could throw.
+
+			if (this.preview_path !== new_preview_path) {
+				return;
 			}
-		}
 
-		set_thumbnail(this.preview_node);
+			let new_root = load_sgf(buf);							// This could throw.
+
+			this.preview_node.destroy_tree();
+			this.preview_node = new_root;
+
+			for (let depth = 0; depth < config.preview_depth; depth++) {
+				if (this.preview_node.children.length > 0) {
+					this.preview_node = this.preview_node.children[0];
+				} else {
+					break;
+				}
+			}
+
+		}).catch(err => {
+
+			console.log("While trying to set preview:", err.toString());
+			this.preview_node.destroy_tree();
+			this.preview_node = new_node();
+			this.preview_path = null;
+
+		}).finally(() => {
+
+			set_thumbnail(this.preview_node);
+
+		});
 	},
 
 	set_preview_from_index: function(n) {
