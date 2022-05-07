@@ -103,6 +103,7 @@ function canonicalresult(RE) {
 	if (RE.startsWith("VOID")) return "Void";
 	if (RE.startsWith("JIGO")) return "Draw";
 	if (RE.startsWith("DRAW")) return "Draw";
+	if (RE === "0") return "Draw";
 
 	if (RE.startsWith("B+") || RE.startsWith("W+")) {
 
