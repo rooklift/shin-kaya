@@ -1,8 +1,7 @@
 "use strict";
 
 const fs = require("fs");
-const path = require("path");
-
+const slashpath = require("./slashpath");
 const load_sgf = require("./load_sgf");
 const { replace_all, safe_html, pad_or_slice } = require("./utils");
 
@@ -11,8 +10,8 @@ const gogod_name_fixes = require("./gogod_name_fixes");
 function create_record(root, filepath) {
 
 	let ret = {
-		path:      path.dirname(filepath),				// path does not include filename
-		filename:  path.basename(filepath),
+		path:      slashpath.dirname(filepath),			// path does not include filename
+		filename:  slashpath.basename(filepath),
 		dyer:      root.dyer(),
 		movecount: move_count(root),
 		SZ:        19,									// Maybe changed below.
@@ -32,12 +31,6 @@ function create_record(root, filepath) {
 		if (!Number.isNaN(i)) {
 			ret[key] = i;
 		}
-	}
-
-	// For consistency, lets always use / as a path separator...
-
-	if (global.process && global.process.platform === "win32") {
-		ret.path = replace_all(ret.path, "\\", "/");
 	}
 
 	// Apply GoGoD name fixes...
