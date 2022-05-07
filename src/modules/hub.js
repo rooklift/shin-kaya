@@ -8,6 +8,7 @@ const db = require("./db");
 const new_node = require("./node");
 const set_thumbnail = require("./thumbnail");
 const load_sgf = require("./load_sgf");
+const slashpath = require("./slashpath");
 const { new_board } = require("./board");
 const { sort_records, deduplicate_records, span_string } = require("./records");
 
@@ -97,8 +98,7 @@ let hub_main_props = {
 		this.lookups = [];
 
 		let binding = {
-			path:     "%" + document.getElementById("path").value + "%",
-			filename: "%" + document.getElementById("filename").value + "%",
+			relpath:  "%" + document.getElementById("relpath").value + "%",
 			dyer:     "%" + document.getElementById("dyer").value + "%", 
 			P1:       "%" + document.getElementById("P1").value + "%",
 			P2:       "%" + document.getElementById("P2").value + "%",
@@ -109,9 +109,7 @@ let hub_main_props = {
 
 		let st = db.current().prepare(`
 			SELECT * FROM Games WHERE
-				(path like @path)
-					and
-				(filename like @filename)
+				(relpath like @relpath)
 					and
 				(dyer like @dyer)
 					and
@@ -151,7 +149,7 @@ let hub_main_props = {
 
 		for (let [i, record] of records.entries()) {
 			lines.push(span_string(record, `gamesbox_entry_${i}`));
-			this.lookups.push(record.path + "/" + record.filename);
+			this.lookups.push(slashpath.join(config.sgfdir, record.relpath));
 		}
 
 		let count_string = `<span class="bold">${records.length}</span> ${records.length === 1 ? "game" : "games"} shown`;

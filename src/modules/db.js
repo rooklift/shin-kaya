@@ -66,8 +66,7 @@ function create_table() {
 	try {
 		let st = current_db.prepare(
 		`CREATE TABLE Games (
-			path      text,
-			filename  text,
+			relpath   text,
 			dyer      text,
 			movecount int,
 			SZ        int,
@@ -126,16 +125,16 @@ function really_update(database) {
 	// Make a set of all known files in the database...
 
 	let db_set = Object.create(null);
-	let st = current_db.prepare("SELECT path, filename FROM Games");
+	let st = current_db.prepare("SELECT relpath FROM Games");
 	let db_objects = st.all();
 	for (let o of db_objects) {
-		db_set[slashpath.join(o.path, o.filename)] = true;
+		db_set[o.relpath] = true;
 	}
 
 	// Make a set of all files in the directory...
 	
 	let file_set = Object.create(null);
-	let files = list_all_files(config.sgfdir);
+	let files = list_all_files(config.sgfdir, "");
 	for (let f of files) {
 		file_set[f] = true;
 	}
@@ -199,11 +198,11 @@ function continue_work(database, missing_files, new_files, missing_off, new_off)
 
 function continue_deletions(arr) {
 
-	let st = current_db.prepare(`DELETE FROM Games WHERE path = ? and filename = ?`);
+	let st = current_db.prepare(`DELETE FROM Games WHERE relpath = ?`);
 
 	let delete_missing = current_db.transaction(() => {
-		for (let filepath of arr) {
-			st.run(slashpath.dirname(filepath), slashpath.basename(filepath));
+		for (let relpath of arr) {
+			st.run(relpath);
 		}
 	});
 
@@ -214,20 +213,20 @@ function continue_additions(arr) {
 
 	let st = current_db.prepare(`
 		INSERT INTO Games (
-			path, filename, dyer, movecount, SZ, HA, PB, PW, BR, WR, RE, DT, EV, RO
+			relpath, dyer, movecount, SZ, HA, PB, PW, BR, WR, RE, DT, EV, RO
 		) VALUES (
-			@path, @filename, @dyer, @movecount, @SZ, @HA, @PB, @PW, @BR, @WR, @RE, @DT, @EV, @RO
+			@relpath, @dyer, @movecount, @SZ, @HA, @PB, @PW, @BR, @WR, @RE, @DT, @EV, @RO
 		)
 	`);
 
 	let add_new = current_db.transaction(() => {
 
-		for (let filepath of arr) {
+		for (let relpath of arr) {
 
 			let record;
 
 			try {
-				record = create_record_from_path(filepath);
+				record = create_record_from_path(config.sgfdir, relpath);
 			} catch (err) {
 				console.log(err);
 				continue;

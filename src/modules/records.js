@@ -7,11 +7,10 @@ const { replace_all, safe_html, pad_or_slice } = require("./utils");
 
 const gogod_name_fixes = require("./gogod_name_fixes");
 
-function create_record(root, filepath) {
+function create_record(root, relpath) {					// root is an SGF node
 
 	let ret = {
-		path:      slashpath.dirname(filepath),			// path does not include filename
-		filename:  slashpath.basename(filepath),
+		relpath:   relpath,
 		dyer:      root.dyer(),
 		movecount: move_count(root),
 		SZ:        19,									// Maybe changed below.
@@ -58,16 +57,18 @@ function move_count(root) {
 	}
 }
 
-function create_record_from_path(filepath) {							// Can throw
+function create_record_from_path(archivepath, relpath) {				// Can throw
 
-	if (!fs.existsSync(filepath)) {
+	let fullpath = slashpath.join(archivepath, relpath);
+
+	if (!fs.existsSync(fullpath)) {
 		throw new Error("No such file");
 	}
 
-	let buf = fs.readFileSync(filepath);								// Can throw (theoretically and maybe actually)
+	let buf = fs.readFileSync(fullpath);								// Can throw (theoretically and maybe actually)
 	let root = load_sgf(buf);											// Can throw
 
-	return create_record(root, filepath);
+	return create_record(root, relpath);
 }
 
 function canonicaldate(DT) {

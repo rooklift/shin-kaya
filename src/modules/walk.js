@@ -4,28 +4,25 @@ const fs = require("fs");
 const slashpath = require("./slashpath");
 const { replace_all } = require("./utils");
 
-function list_all_files(...args) {
-	let dir_list = args.flat(Infinity);
+function list_all_files(archivepath, relpath) {
 	let ret = [];
-	for (let d of dir_list) {
-		let read;
-		try {
-			read = fs.readdirSync(d);
-		} catch (err) {
-			console.log(err.toString());
-			continue;
-		}
-		for (let o of read) {
-			let fullpath = slashpath.join(d, o);
-			if (o.toLowerCase().endsWith(".sgf")) {								// We think this is a file...
-				ret.push(fullpath);
-			} else if (o.toLowerCase().endsWith(".db")) {
-				console.log(`Skipping ${fullpath}`);
-			} else if (o.toLowerCase().endsWith("journal")) {
-				console.log(`Skipping ${fullpath}`);
-			} else {															// We think this is a directory...
-				ret = ret.concat(list_all_files(fullpath));
-			}
+	let read;
+	try {
+		read = fs.readdirSync(slashpath.join(archivepath, relpath));
+	} catch (err) {
+		console.log(err.toString());
+		return ret;
+	}
+	for (let o of read) {
+		let file_relpath = slashpath.join(relpath, o);
+		if (o.toLowerCase().endsWith(".sgf")) {								// We think this is a file...
+			ret.push(file_relpath);
+		} else if (o.toLowerCase().endsWith(".db")) {
+			console.log(`Skipping ${file_relpath}`);
+		} else if (o.toLowerCase().endsWith("journal")) {
+			console.log(`Skipping ${file_relpath}`);
+		} else {															// We think this is a directory...
+			ret = ret.concat(list_all_files(archivepath, file_relpath));
 		}
 	}
 	return ret;
