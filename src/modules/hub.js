@@ -193,7 +193,7 @@ let hub_main_props = {
 
 	set_preview_from_path: function(new_preview_path) {
 
-		// Note: this.preview_node must end up being a valid node, never null.
+		// Early aborts...
 
 		if (this.preview_path === new_preview_path) {
 			return;
@@ -207,11 +207,12 @@ let hub_main_props = {
 			return;
 		}
 
-		// Note this.preview_path is set instantly, before the async load completes...
+		// The main part of this function is async, on the theory that there may be a little lag time
+		// when loading the file, which may feel unresponsive. Note this.preview_path is set instantly.
 
 		this.preview_path = new_preview_path;
 
-		fs.readFile(new_preview_path).then(buf => {					// the read itself could throw.
+		fs.readFile(new_preview_path).then(buf => {					// The read itself could throw.
 
 			if (this.preview_path !== new_preview_path) {
 				return;
@@ -230,7 +231,7 @@ let hub_main_props = {
 				}
 			}
 
-		}).catch(err => {
+		}).catch(err => {											// Reachable from the 2 throw locations, above.
 
 			console.log("While trying to set preview:", err.toString());
 			this.preview_node.destroy_tree();
