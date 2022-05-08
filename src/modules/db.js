@@ -188,7 +188,7 @@ function continue_work(database, archivepath, missing_files, new_files, missing_
 	if (missing_off < missing_files.length || new_off < new_files.length) {
 		work_timeout_id = setTimeout(() => {
 			work_timeout_id = null;
-			continue_work(current_db, archivepath, missing_files, new_files, missing_off, new_off)
+			continue_work(current_db, archivepath, missing_files, new_files, missing_off, new_off);
 		}, 5);
 	} else {
 		document.getElementById("status").innerHTML = `Update completed - deletions: ${missing_files.length}, additions: ${new_files.length}`;
