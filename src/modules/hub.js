@@ -95,13 +95,13 @@ let hub_main_props = {
 		}
 
 		let binding = {
-			relpath:  "%" + document.getElementById("relpath").value + "%",
-			dyer:     "%" + document.getElementById("dyer").value + "%", 
-			P1:       "%" + document.getElementById("P1").value + "%",
-			P2:       "%" + document.getElementById("P2").value + "%",
-			DT:       "%" + document.getElementById("DT").value + "%",
-			EV:       "%" + document.getElementById("EV").value + "%",
-			RO:       "%" + document.getElementById("RO").value + "%",
+			relpath:  "%" + document.getElementById("relpath").value.trim() + "%",
+			dyer:     "%" + document.getElementById("dyer").value.trim() + "%", 
+			P1:       "%" + document.getElementById("P1").value.trim() + "%",
+			P2:       "%" + document.getElementById("P2").value.trim() + "%",
+			DT:       "%" + document.getElementById("DT").value.trim() + "%",
+			EV:       "%" + document.getElementById("EV").value.trim() + "%",
+			RO:       "%" + document.getElementById("RO").value.trim() + "%",
 		};
 
 		let st = db.current().prepare(`
