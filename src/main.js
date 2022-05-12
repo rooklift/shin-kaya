@@ -204,7 +204,18 @@ function menu_build() {
 				{
 					label: "Reset (destroy) database",
 					click: () => {
-						win.webContents.send("call", "reset_db");
+						electron.dialog.showMessageBox(win, {
+							message: "Really reset the database?",
+							buttons: ["Reset and destroy", "Cancel"],
+							cancelId: 1,								// Note: without this field, cancellation might (?) return 0 (poor design imo...)
+							defaultId: 1,
+							noLink: true,
+							type: "warning",
+						}).then((o) => {
+							if (o.response === 0) {
+								win.webContents.send("call", "reset_db");
+							}
+						});
 					}
 				}
 			]
