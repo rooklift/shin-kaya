@@ -210,6 +210,7 @@ function menu_build() {
 							cancelId: 1,								// Note: without this field, cancellation might (?) return 0 (poor design imo...)
 							defaultId: 1,
 							noLink: true,
+							title: "Warning",
 							type: "warning",
 						}).then((o) => {
 							if (o.response === 0) {
