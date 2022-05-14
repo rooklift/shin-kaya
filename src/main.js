@@ -188,6 +188,7 @@ function menu_build() {
 				},
 				{
 					label: "Update now",
+					accelerator: "CommandOrControl+U",
 					click: () => {
 						win.webContents.send("call", "update_db");
 					}
