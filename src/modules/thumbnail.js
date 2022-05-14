@@ -33,9 +33,9 @@ module.exports = function(node, square_size = 11) {
 	ctx.strokeStyle = "#775511ff";
 
 	for (let x = 0; x < board.width; x++) {
-		let x1 = (x * square_size) + (square_size / 2);
-		let y1 = (square_size / 2);
-		let y2 = (board.height * square_size) - (square_size / 2);
+		let x1 = (x * square_size) + (square_size / 2) + x_offset;
+		let y1 = (square_size / 2) + y_offset;
+		let y2 = (board.height * square_size) - (square_size / 2) + y_offset;
 		ctx.beginPath();
 		ctx.moveTo(x1, y1);
 		ctx.lineTo(x1, y2);
@@ -43,9 +43,9 @@ module.exports = function(node, square_size = 11) {
 	}
 
 	for (let y = 0; y < board.height; y++) {
-		let y1 = (y * square_size) + (square_size / 2);
-		let x1 = (square_size / 2);
-		let x2 = (board.width * square_size) - (square_size / 2);
+		let y1 = (y * square_size) + (square_size / 2) + y_offset;
+		let x1 = (square_size / 2) + x_offset;
+		let x2 = (board.width * square_size) - (square_size / 2) + x_offset;
 		ctx.beginPath();
 		ctx.moveTo(x1, y1);
 		ctx.lineTo(x2, y1);
@@ -56,8 +56,8 @@ module.exports = function(node, square_size = 11) {
 		for (let y = 0; y < board.height; y++) {
 			if (board.state[x][y]) {
 
-				let gx = x * square_size + (square_size / 2) + x_offset;
-				let gy = y * square_size + (square_size / 2) + y_offset;
+				let gx = (x * square_size) + (square_size / 2) + x_offset;
+				let gy = (y * square_size) + (square_size / 2) + y_offset;
 
 				ctx.fillStyle = board.state[x][y] === "b" ? "#000000ff" : "#ffffffff";
 				ctx.lineWidth = 0;
