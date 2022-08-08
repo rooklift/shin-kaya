@@ -123,6 +123,8 @@ function sort_records(records) {
 	records.sort((a, b) => {
 		if (a.DT < b.DT) return -1;
 		if (a.DT > b.DT) return 1;
+		if (a.EV < b.EV) return -1;
+		if (a.EV > b.EV) return 1;
 		if (a.PB < b.PB) return -1;
 		if (a.PB > b.PB) return 1;
 		return 0;
