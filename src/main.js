@@ -1,6 +1,8 @@
 "use strict";
 
 const electron = require("electron");
+electron.app.disableHardwareAcceleration();
+
 const path = require("path");
 const alert = require("./modules/alert_main");
 const stringify = require("./modules/stringify");
