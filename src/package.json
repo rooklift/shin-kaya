@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "main.js",
   "dependencies": {
-    "better-sqlite3": "^7.6.2"
+    "better-sqlite3": "^8.0.1"
   },
   "devDependencies": {
     "electron-rebuild": "^3.2.9"
