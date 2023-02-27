@@ -23,3 +23,11 @@ exports.join = (...args) => {
 	}
 	return s;
 };
+
+exports.relative = (a, b) => {
+	let s = path.relative(a, b);
+	if (global.process && global.process.platform === "win32") {
+		s = replace_all(s, "\\", "/");
+	}
+	return s;
+};
