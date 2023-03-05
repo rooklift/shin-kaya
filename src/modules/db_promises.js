@@ -139,7 +139,7 @@ function make_db_set(database) {
 function main_update_promise(database, archivepath, db_set, files) {
 
 	if (database !== current_db) {
-		return Promise.reject(Error("main_update_promise(): database changed unexpectedly"));
+		return Promise.reject(new Error("main_update_promise(): database changed unexpectedly"));
 	}
 
 	let file_set = Object.create(null);
@@ -193,7 +193,8 @@ function continue_work(resolve, reject, database, archivepath, missing_files, ne
 		continue_additions(database, archivepath, new_files.slice(new_off, new_off + ADDITION_BATCH_SIZE));
 		new_off += ADDITION_BATCH_SIZE;
 	} else {
-		throw new Error("continue_work(): offsets indicated work was already complete");
+		reject(new Error("continue_work(): offsets indicated work was already complete"));		// Impossible.
+		return;
 	}
 
 	if (missing_off >= missing_files.length && new_off >= new_files.length) {
