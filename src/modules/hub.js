@@ -4,7 +4,7 @@ const { ipcRenderer, shell } = require("electron");
 const fs = require("fs/promises");
 
 const config_io = require("./config_io");
-const db = require("./db_promise");
+const db = require("./db_promises");
 const new_node = require("./node");
 const set_thumbnail = require("./thumbnail");
 const load_sgf = require("./load_sgf");

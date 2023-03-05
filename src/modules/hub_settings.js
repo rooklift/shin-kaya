@@ -1,7 +1,7 @@
 "use strict";
 
 const { ipcRenderer } = require("electron");
-const db = require("./db");
+const db = require("./db_promises");
 
 const multichecks = {
 	"preview_depth":		["View", "Preview depth (initial)"]

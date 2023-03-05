@@ -27,7 +27,7 @@ function list_all_files(archivepath, relpath) {
 			}
 		}
 
-		// So we have files and promises... wait for the promises to resolve then construct the result...
+		// So we have files and promises... return a promise that will construct the final result...
 
 		return Promise.all(promises).then(promised_results => {
 			let result = Array.from(files);

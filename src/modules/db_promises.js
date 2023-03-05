@@ -4,7 +4,7 @@ const fs = require("fs");
 const sql = require("better-sqlite3");
 
 const slashpath = require("./slashpath");
-const { list_all_files } = require("./walk_promise");
+const { list_all_files } = require("./walk_promises");
 const { create_record_from_path } = require("./records");
 
 const DELETION_BATCH_SIZE = 5;			// Ugh delete is so slow
