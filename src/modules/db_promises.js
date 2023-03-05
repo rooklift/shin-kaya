@@ -163,7 +163,7 @@ function update_promise_2(database, archivepath, db_set, files) {
 	}
 
 	if (missing_files.length === 0 && new_files.length === 0) {
-		return Promise.reject(new Error("update_promise_2(): No additions or deletions."))
+		return Promise.resolve({additions: 0, deletions: 0});
 	}
 
 	return new Promise((resolve, reject) => {
