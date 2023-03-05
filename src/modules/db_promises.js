@@ -124,7 +124,7 @@ function make_db_set(database) {
 	// Like all better-sqlite3 ops, this is sync...
 
 	if (database !== current_db) {
-		throw new Error("update_promise_1(): database changed unexpectedly");
+		throw new Error("make_db_set(): database changed unexpectedly");
 	}
 
 	let db_set = Object.create(null);
