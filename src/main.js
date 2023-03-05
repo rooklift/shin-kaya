@@ -182,7 +182,7 @@ function menu_build() {
 				{
 					label: "Count entries",
 					click: () => {
-						win.webContents.send("call", "count_rows");
+						win.webContents.send("call", "display_row_count");
 					}
 				},
 				{
