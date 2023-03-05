@@ -12,6 +12,7 @@ const ADDITION_BATCH_SIZE = 47;
 
 let current_db = null;
 let work_in_progress = false;
+let abort_flag = false;
 
 exports.current = function() {
 	return current_db;
@@ -90,7 +91,9 @@ function maybe_create_table() {
 }
 
 exports.stop_update = function() {
-	work_in_progress = false;
+	if (work_in_progress) {
+		abort_flag = true;
+	}
 };
 
 exports.update = function() {
@@ -114,6 +117,7 @@ exports.update = function() {
 		return main_update_promise(database, archivepath, make_db_set(database), files);
 	}).finally(() => {
 		work_in_progress = false;
+		abort_flag = false;
 	});
 };
 
@@ -179,7 +183,7 @@ function continue_work(resolve, reject, database, archivepath, missing_files, ne
 		return;
 	}
 
-	if (work_in_progress === false) {
+	if (abort_flag) {
 		reject(new Error("continue_work(): aborted by user"));
 		return;
 	}
