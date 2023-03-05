@@ -50,6 +50,9 @@ let hub_main_props = {
 	},
 
 	update_db: function() {
+		if (db.wip()) {
+			return;
+		}
 		document.getElementById("status").innerHTML = `Updating, this may take some time...`;
 		db.update().then((o) => {
 			document.getElementById("status").innerHTML = `Update completed - deletions: ${o.deletions}, additions: ${o.additions}`;
