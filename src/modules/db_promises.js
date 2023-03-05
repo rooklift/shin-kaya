@@ -184,11 +184,11 @@ function continue_work(resolve, reject, database, archivepath, missing_files, ne
 	}
 
 	if (missing_off < missing_files.length) {
-		document.getElementById("status").innerHTML = `In progress, ${missing_files.length - missing_off} deletions remaining...`;
+		document.getElementById("status").innerHTML = `Deletions: ${missing_off} of ${missing_files.length}...`;
 		continue_deletions(missing_files.slice(missing_off, missing_off + DELETION_BATCH_SIZE));
 		missing_off += DELETION_BATCH_SIZE;
 	} else if (new_off < new_files.length) {
-		document.getElementById("status").innerHTML = `In progress, ${new_files.length - new_off} additions remaining...`;
+		document.getElementById("status").innerHTML = `Additions: ${new_off} of ${new_files.length}...`;
 		continue_additions(archivepath, new_files.slice(new_off, new_off + ADDITION_BATCH_SIZE));
 		new_off += ADDITION_BATCH_SIZE;
 	} else {
