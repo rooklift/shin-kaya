@@ -107,19 +107,25 @@ exports.update = function() {
 	}
 
 	work_in_progress = true;
-	return update_promise_1(current_db, config.sgfdir).finally(() => {
+
+	let database = current_db;
+	let archivepath = config.sgfdir;
+	
+	return list_all_files(archivepath, "").then(files => {
+		return main_update_promise(database, archivepath, make_db_set(database), files);
+	}).finally(() => {
 		work_in_progress = false;
 	});
 };
 
-function update_promise_1(database, archivepath) {
-
-	if (database !== current_db) {
-		return Promise.reject(new Error("update_promise_1(): database changed unexpectedly"));
-	}
+function make_db_set(database) {
 
 	// Make a set of all known files in the database.
 	// Like all better-sqlite3 ops, this is sync...
+
+	if (database !== current_db) {
+		throw new Error("update_promise_1(): database changed unexpectedly");
+	}
 
 	let db_set = Object.create(null);
 	let st = database.prepare("SELECT relpath FROM Games");
@@ -128,17 +134,13 @@ function update_promise_1(database, archivepath) {
 		db_set[o.relpath] = true;
 	}
 
-	// Do the async file-walk and then continue...
-
-	return list_all_files(archivepath, "").then(files => {
-		return update_promise_2(database, archivepath, db_set, files);
-	});
+	return db_set;
 }
 
-function update_promise_2(database, archivepath, db_set, files) {
+function main_update_promise(database, archivepath, db_set, files) {
 
 	if (database !== current_db) {
-		return Promise.reject(new Error("update_promise_2(): database changed unexpectedly"));
+		throw new Error("main_update_promise(): database changed unexpectedly");
 	}
 
 	let file_set = Object.create(null);
@@ -163,7 +165,7 @@ function update_promise_2(database, archivepath, db_set, files) {
 	}
 
 	if (missing_files.length === 0 && new_files.length === 0) {
-		return Promise.resolve({additions: 0, deletions: 0});
+		return {additions: 0, deletions: 0};
 	}
 
 	return new Promise((resolve, reject) => {
@@ -185,11 +187,11 @@ function continue_work(resolve, reject, database, archivepath, missing_files, ne
 
 	if (missing_off < missing_files.length) {
 		document.getElementById("status").innerHTML = `Deletions: ${missing_off} of ${missing_files.length}...`;
-		continue_deletions(missing_files.slice(missing_off, missing_off + DELETION_BATCH_SIZE));
+		continue_deletions(database, missing_files.slice(missing_off, missing_off + DELETION_BATCH_SIZE));
 		missing_off += DELETION_BATCH_SIZE;
 	} else if (new_off < new_files.length) {
 		document.getElementById("status").innerHTML = `Additions: ${new_off} of ${new_files.length}...`;
-		continue_additions(archivepath, new_files.slice(new_off, new_off + ADDITION_BATCH_SIZE));
+		continue_additions(database, archivepath, new_files.slice(new_off, new_off + ADDITION_BATCH_SIZE));
 		new_off += ADDITION_BATCH_SIZE;
 	} else {
 		throw new Error("continue_work(): offsets indicated work was already complete");
@@ -201,15 +203,15 @@ function continue_work(resolve, reject, database, archivepath, missing_files, ne
 	}
 
 	setTimeout(() => {
-		continue_work(resolve, reject, current_db, archivepath, missing_files, new_files, missing_off, new_off);
+		continue_work(resolve, reject, database, archivepath, missing_files, new_files, missing_off, new_off);
 	}, 5);
 }
 
-function continue_deletions(arr) {
+function continue_deletions(database, arr) {
 
-	let st = current_db.prepare(`DELETE FROM Games WHERE relpath = ?`);
+	let st = database.prepare(`DELETE FROM Games WHERE relpath = ?`);
 
-	let delete_missing = current_db.transaction(() => {
+	let delete_missing = database.transaction(() => {
 		for (let relpath of arr) {
 			st.run(relpath);
 		}
@@ -218,9 +220,9 @@ function continue_deletions(arr) {
 	delete_missing();
 }
 
-function continue_additions(archivepath, arr) {
+function continue_additions(database, archivepath, arr) {
 
-	let st = current_db.prepare(`
+	let st = database.prepare(`
 		INSERT INTO Games (
 			relpath, dyer, movecount, SZ, HA, PB, PW, BR, WR, RE, DT, EV, RO
 		) VALUES (
@@ -228,7 +230,7 @@ function continue_additions(archivepath, arr) {
 		)
 	`);
 
-	let add_new = current_db.transaction(() => {
+	let add_new = database.transaction(() => {
 
 		for (let relpath of arr) {
 
