@@ -96,7 +96,6 @@ exports.stop_update = function() {
 exports.update = function() {
 
 	// The only export that returns a promise. Resolves with {additions, deletions}.
-	// The only export that adjusts work_in_progress.
 
 	if (!current_db) {
 		return Promise.reject(new Error("update(): No database."));
