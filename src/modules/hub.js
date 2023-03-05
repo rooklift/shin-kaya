@@ -51,8 +51,8 @@ let hub_main_props = {
 
 	update_db: function() {
 		document.getElementById("status").innerHTML = `Updating, this may take some time...`;
-		db.update().then(() => {
-			document.getElementById("status").innerHTML = `Update completed - deletions: ${missing_files.length}, additions: ${new_files.length}`;
+		db.update().then((o) => {
+			document.getElementById("status").innerHTML = `Update completed - deletions: ${o.deletions}, additions: ${o.additions}`;
 		}).catch(err => {
 			document.getElementById("status").innerHTML = err.toString();
 		});
