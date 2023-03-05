@@ -6,6 +6,8 @@ const { replace_all } = require("./utils");
 
 function list_all_files(archivepath, relpath) {
 
+	// An async / await version would be slightly easier to write, but oh well.
+
 	return fs.readdir(slashpath.join(archivepath, relpath)).then(read => {
 
 		let files = [];
@@ -15,14 +17,14 @@ function list_all_files(archivepath, relpath) {
 
 			let new_relpath = slashpath.join(relpath, o);
 
-			if (o.toLowerCase().endsWith(".sgf")) {								// We think this is a file...
+			if (o.toLowerCase().endsWith(".sgf")) {									// We think this is a file...
 				files.push(new_relpath);
 			} else if (o.toLowerCase().endsWith(".db")) {
 				// skip
 			} else if (o.toLowerCase().endsWith("journal")) {
 				// skip
-			} else {															// We think this is a directory...
-				let np = list_all_files(archivepath, new_relpath);
+			} else {																// We think this is a directory... but maybe not.
+				let np = list_all_files(archivepath, new_relpath).catch(err => []);
 				promises.push(np);
 			}
 		}
@@ -39,35 +41,5 @@ function list_all_files(archivepath, relpath) {
 	});
 }
 
-/*
-// This is equivalent. I gotta say the async/await version was easier to write...
-
-async function list_all_files(archivepath, relpath) {
-
-	let ret = [];
-
-	let read = await fs.readdir(slashpath.join(archivepath, relpath));
-
-	for (let o of read) {
-
-		let new_relpath = slashpath.join(relpath, o);
-
-		if (o.toLowerCase().endsWith(".sgf")) {								// We think this is a file...
-			ret.push(new_relpath);
-		} else if (o.toLowerCase().endsWith(".db")) {
-			// skip
-		} else if (o.toLowerCase().endsWith("journal")) {
-			// skip
-		} else {															// We think this is a directory...
-			let recurse = await list_all_files(archivepath, new_relpath);
-			ret = ret.concat(recurse);
-		}
-	}
-
-	return ret;
-}
-*/
 
 module.exports = {list_all_files};
-
-
