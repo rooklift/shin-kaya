@@ -4,9 +4,33 @@ const fs = require("fs/promises");
 const slashpath = require("./slashpath");
 const { replace_all } = require("./utils");
 
-function list_all_files(archivepath, relpath) {
+async function list_all_files(archivepath, relpath) {
+	let ret = [];
+	let read = await fs.readdir(slashpath.join(archivepath, relpath));
+	for (let o of read) {
+		let new_relpath = slashpath.join(relpath, o);
+		if (o.toLowerCase().endsWith(".sgf")) {										// We think this is a file...
+			ret.push(new_relpath);
+		} else if (o.toLowerCase().endsWith(".db")) {
+			// skip
+		} else if (o.toLowerCase().endsWith("journal")) {
+			// skip
+		} else {																	// We think this is a directory... but maybe not.
+			try {
+				let recurse = await list_all_files(archivepath, new_relpath);
+				ret = ret.concat(recurse);
+			} catch (err) {
+				// skip
+			}
+		}
+	}
+	return ret;
+}
 
-	// An async / await version would be slightly easier to write, but oh well.
+// Pure promise-based version without using async / await keywords. However, the await version
+// might be better because it doesn't try to concurrently read multiple folders at once?
+
+function list_all_files_alterative(archivepath, relpath) {
 
 	return fs.readdir(slashpath.join(archivepath, relpath)).then(read => {
 
