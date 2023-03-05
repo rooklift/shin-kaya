@@ -192,9 +192,6 @@ function continue_work(resolve, reject, database, archivepath, missing_files, ne
 		document.getElementById("status").innerHTML = `Additions: ${new_off} of ${new_files.length}...`;
 		continue_additions(database, archivepath, new_files.slice(new_off, new_off + ADDITION_BATCH_SIZE));
 		new_off += ADDITION_BATCH_SIZE;
-	} else {
-		reject(new Error("continue_work(): offsets indicated work was already complete"));		// Impossible.
-		return;
 	}
 
 	if (missing_off >= missing_files.length && new_off >= new_files.length) {
