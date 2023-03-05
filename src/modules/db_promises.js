@@ -44,8 +44,7 @@ exports.connect = function() {			// Using config.sgfdir
 exports.drop_table = function() {
 
 	if (work_in_progress) {
-		alert("Unable. Work is in progress.");
-		return;
+		throw new Error("drop_table() called while work in progress");
 	}
 
 	if (current_db) {
@@ -58,6 +57,10 @@ exports.drop_table = function() {
 }
 
 function maybe_create_table() {
+
+	if (work_in_progress) {
+		throw new Error("maybe_create_table() called while work in progress");
+	}
 
 	if (!current_db) {
 		return;
