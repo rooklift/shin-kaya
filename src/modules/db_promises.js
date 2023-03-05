@@ -139,7 +139,7 @@ function make_db_set(database) {
 function main_update_promise(database, archivepath, db_set, files) {
 
 	if (database !== current_db) {
-		throw new Error("main_update_promise(): database changed unexpectedly");
+		return Promise.reject(Error("main_update_promise(): database changed unexpectedly"));
 	}
 
 	let file_set = Object.create(null);
@@ -164,7 +164,7 @@ function main_update_promise(database, archivepath, db_set, files) {
 	}
 
 	if (missing_files.length === 0 && new_files.length === 0) {
-		return {additions: 0, deletions: 0};
+		return Promise.resolve({additions: 0, deletions: 0});
 	}
 
 	return new Promise((resolve, reject) => {
