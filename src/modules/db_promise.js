@@ -1,31 +1,31 @@
 "use strict";
 
-// This file contains stuff for connecting to database, as well as code that handles the
-// slightly tricky business of updating a database. It does not deal with normal queries.
-
 const fs = require("fs");
 const sql = require("better-sqlite3");
 
 const slashpath = require("./slashpath");
-const { list_all_files } = require("./walk");
+const { list_all_files } = require("./walk_promise");
 const { create_record_from_path } = require("./records");
 
 const DELETION_BATCH_SIZE = 5;			// Ugh delete is so slow
 const ADDITION_BATCH_SIZE = 47;
 
 let current_db = null;
-
-let work_timeout_id = null;				// Return val from setTimeout, so we can cancel any work in progress.
-
-// ------------------------------------------------------------------------------------------------
+let work_in_progress = false;
 
 exports.current = function() {
 	return current_db;
 };
 
+exports.wip = function() {
+	return work_in_progress;
+};
+
 exports.connect = function() {			// Using config.sgfdir
 
-	exports.stop_update();
+	if (work_in_progress) {
+		throw new Error("connect() called while work in progress");
+	}
 
 	if (current_db) {
 		current_db.close();
@@ -38,26 +38,26 @@ exports.connect = function() {			// Using config.sgfdir
 	}
 
 	current_db = sql(slashpath.join(config.sgfdir, "shin-kaya.db"));
-	create_table();
+	maybe_create_table();
 };
 
 exports.drop_table = function() {
 
-	exports.stop_update();
+	if (work_in_progress) {
+		alert("Unable. Work is in progress.");
+		return;
+	}
 
 	if (current_db) {
 		let st = current_db.prepare(`DROP TABLE Games`);
 		st.run();
 		st = current_db.prepare(`vacuum`);
 		st.run();
-		create_table();
+		maybe_create_table();
 	}
-};
+}
 
-// ------------------------------------------------------------------------------------------------
-// If this gets changed, must also change create_record() and continue_additions()
-
-function create_table() {
+function maybe_create_table() {
 
 	if (!current_db) {
 		return;
@@ -86,55 +86,59 @@ function create_table() {
 	}
 }
 
-// ------------------------------------------------------------------------------------------------
-// Update code...
-
 exports.stop_update = function() {
-	if (work_timeout_id !== null) {
-		clearTimeout(work_timeout_id);
-		work_timeout_id = null;
-	}
-};
+	work_in_progress = false;
+}
 
 exports.update = function() {
 
+	// The only export that returns a promise. Resolves with {additions, deletions}.
+	// The only export that adjusts work_in_progress.
+
 	if (!current_db) {
-		return;
+		return Promise.reject(new Error("update(): No database."));
 	}
 
-	if (work_timeout_id !== null) {						// Work is already happening
-		return;
+	if (work_in_progress) {
+		return Promise.reject(new Error("update(): Work is in progress."));
 	}
 
-	document.getElementById("status").innerHTML = `Updating, this may take some time...`;
+	work_in_progress = true;
+	return update_promise_1(current_db, config.sgfdir).finally(() => {
+		work_in_progress = false;
+	});
+}
 
-	// Start the work in a timeout so the page has a chance to update with the message.
-
-	work_timeout_id = setTimeout(() => {
-		work_timeout_id = null;
-		really_update(current_db, config.sgfdir);
-	}, 5);
-};
-
-function really_update(database, archivepath) {
+function update_promise_1(database, archivepath) {
 
 	if (database !== current_db) {
-		throw new Error("really_update(): database changed unexpectedly");
+		return Promise.reject(new Error("update_promise_1(): database changed unexpectedly"));
 	}
 
-	// Make a set of all known files in the database...
+	// Make a set of all known files in the database.
+	// Like all better-sqlite3 ops, this is sync...
 
 	let db_set = Object.create(null);
-	let st = current_db.prepare("SELECT relpath FROM Games");
+	let st = database.prepare("SELECT relpath FROM Games");
 	let db_objects = st.all();
 	for (let o of db_objects) {
 		db_set[o.relpath] = true;
 	}
 
-	// Make a set of all files in the directory...
-	
+	// Do the async file-walk and then continue...
+
+	return list_all_files(archivepath, "").then(files => {
+		return update_promise_2(database, archivepath, db_set, files);
+	});
+}
+
+function update_promise_2(database, archivepath, db_set, files) {
+
+	if (database !== current_db) {
+		return Promise.reject(new Error("update_promise_2(): database changed unexpectedly"));
+	}
+
 	let file_set = Object.create(null);
-	let files = list_all_files(archivepath, "");
 	for (let f of files) {
 		file_set[f] = true;
 	}
@@ -155,22 +159,25 @@ function really_update(database, archivepath) {
 		}
 	}
 
-	// Schedule the work...
-
-	if (missing_files.length > 0 || new_files.length > 0) {
-		work_timeout_id = setTimeout(() => {
-			work_timeout_id = null;
-			continue_work(current_db, archivepath, missing_files, new_files, 0, 0);
-		}, 5);
-	} else {
-		document.getElementById("status").innerHTML = `No changes made`;
+	if (missing_files.length === 0 && new_files.length === 0) {
+		return Promise.reject(new Error("update_promise_2(): No additions or deletions."))
 	}
+
+	return new Promise((resolve, reject) => {
+		continue_work(resolve, reject, database, archivepath, missing_files, new_files, 0, 0);
+	});
 }
 
-function continue_work(database, archivepath, missing_files, new_files, missing_off, new_off) {
+function continue_work(resolve, reject, database, archivepath, missing_files, new_files, missing_off, new_off) {
 
 	if (database !== current_db) {
-		throw new Error("continue_work(): database changed unexpectedly");
+		reject(new Error("continue_work(): database changed unexpectedly"));
+		return;
+	}
+
+	if (work_in_progress === false) {
+		reject(new Error("continue_work(): aborted by user"));
+		return;
 	}
 
 	if (missing_off < missing_files.length) {
@@ -185,15 +192,14 @@ function continue_work(database, archivepath, missing_files, new_files, missing_
 		throw new Error("continue_work(): offsets indicated work was already complete");
 	}
 
-	if (missing_off < missing_files.length || new_off < new_files.length) {
-		work_timeout_id = setTimeout(() => {
-			work_timeout_id = null;
-			continue_work(current_db, archivepath, missing_files, new_files, missing_off, new_off);
-		}, 5);
-	} else {
-		document.getElementById("status").innerHTML = `Update completed - deletions: ${missing_files.length}, additions: ${new_files.length}`;
+	if (missing_off >= missing_files.length && new_off >= new_files.length) {
+		resolve({additions: new_files.length, deletions: missing_files.length});
+		return;
 	}
 
+	setTimeout(() => {
+		continue_work(resolve, reject, current_db, archivepath, missing_files, new_files, missing_off, new_off);
+	}, 5);
 }
 
 function continue_deletions(arr) {
@@ -238,3 +244,4 @@ function continue_additions(archivepath, arr) {
 
 	add_new();
 }
+

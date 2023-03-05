@@ -4,7 +4,7 @@ const { ipcRenderer, shell } = require("electron");
 const fs = require("fs/promises");
 
 const config_io = require("./config_io");
-const db = require("./db");
+const db = require("./db_promise");
 const new_node = require("./node");
 const set_thumbnail = require("./thumbnail");
 const load_sgf = require("./load_sgf");
@@ -31,7 +31,6 @@ function init() {
 let hub_main_props = {
 
 	quit: function() {
-		db.stop_update();
 		config_io.save();					// As long as we use the sync save, this will complete before we
 		ipcRenderer.send("terminate");		// send "terminate". Not sure about results if that wasn't so.
 	},
@@ -41,44 +40,45 @@ let hub_main_props = {
 	},
 
 	connect_db: function() {
-
-		if (typeof config.sgfdir !== "string" || config.sgfdir === "") {
-			this.display_no_connection();
+		if (db.wip()) {
+			alert("Unable. Work is in progress.");
 			return;
 		}
-
 		db.connect();
-		this.count_rows();
-
+		this.display_row_count();
 	},
 
 	update_db: function() {
-		if (!db.current()) {
-			this.display_no_connection();
-			return;
-		}
-		db.update();
+		document.getElementById("status").innerHTML = `Updating, this may take some time...`;
+		db.update().then(() => {
+			document.getElementById("status").innerHTML = `Update completed - deletions: ${missing_files.length}, additions: ${new_files.length}`;
+		}).catch(err => {
+			document.getElementById("status").innerHTML = err.toString();
+		});
 	},
 
 	stop_update: function() {
-		if (!db.current()) {
-			this.display_no_connection();
-			return;
-		}
 		db.stop_update();
-		this.count_rows();
 	},
 
 	reset_db: function() {
+		if (db.wip()) {
+			alert("Unable. Work is in progress.");
+			return;
+		}
 		if (!db.current()) {
 			this.display_no_connection();
 			return;
 		}
 		db.drop_table();
-		this.count_rows();
+		this.display_row_count();
 	},
 
-	count_rows: function() {
+	display_row_count: function() {
+		if (db.wip()) {
+			alert("Unable. Work is in progress.");
+			return;
+		}
 		if (!db.current()) {
 			this.display_no_connection();
 			return;
@@ -91,7 +91,7 @@ let hub_main_props = {
 	get_iterator: function() {
 
 		if (!db.current()) {
-			return null;
+			return [];
 		}
 
 		let binding = {
@@ -124,6 +124,10 @@ let hub_main_props = {
 
 	get_all: function() {			// For debugging, returns the actual SQL records.
 
+		if (db.wip()) {
+			return null;
+		}
+
 		if (!db.current()) {
 			return null;
 		}
@@ -138,6 +142,11 @@ let hub_main_props = {
 	},
 
 	search: function() {
+
+		if (db.wip()) {
+			alert("Unable. Work is in progress.");
+			return;
+		}
 
 		if (!db.current()) {
 			this.display_no_connection();

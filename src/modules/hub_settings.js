@@ -23,13 +23,20 @@ module.exports = {
 
 	set: function(key, value) {
 
+		let old_value = config[key];
 		config[key] = value;
 
 		switch (key) {
 
 			case "sgfdir":
-				db.connect();
-				this.count_rows();
+
+				if (db.wip()) {
+					config[key] = old_value;
+					alert("Unable. Work is in progress.");
+				} else {
+					db.connect();
+					this.display_row_count();
+				}
 				break;
 		}
 
