@@ -54,7 +54,7 @@ exports.drop_table = function() {
 		st.run();
 		maybe_create_table();
 	}
-}
+};
 
 function maybe_create_table() {
 
@@ -91,7 +91,7 @@ function maybe_create_table() {
 
 exports.stop_update = function() {
 	work_in_progress = false;
-}
+};
 
 exports.update = function() {
 
@@ -110,7 +110,7 @@ exports.update = function() {
 	return update_promise_1(current_db, config.sgfdir).finally(() => {
 		work_in_progress = false;
 	});
-}
+};
 
 function update_promise_1(database, archivepath) {
 
