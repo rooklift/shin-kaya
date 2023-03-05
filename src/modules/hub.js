@@ -60,6 +60,7 @@ let hub_main_props = {
 
 	stop_update: function() {
 		db.stop_update();
+		this.display_row_count();
 	},
 
 	reset_db: function() {
