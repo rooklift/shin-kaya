@@ -31,6 +31,7 @@ function init() {
 let hub_main_props = {
 
 	quit: function() {
+		db.stop_update();
 		config_io.save();					// As long as we use the sync save, this will complete before we
 		ipcRenderer.send("terminate");		// send "terminate". Not sure about results if that wasn't so.
 	},
