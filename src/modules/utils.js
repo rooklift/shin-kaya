@@ -111,3 +111,12 @@ exports.safe_html = function(s) {
 	s = exports.replace_all(s,  `"`  ,  `&quot;`  );
 	return s;
 };
+
+exports.ends_with_any = function(s, arr) {
+	for (let end of arr) {
+		if (s.endsWith(end)) {
+			return true;
+		}
+	}
+	return false;
+};

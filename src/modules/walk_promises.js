@@ -2,7 +2,7 @@
 
 const fs = require("fs/promises");
 const slashpath = require("./slashpath");
-const { replace_all } = require("./utils");
+const { replace_all, ends_with_any } = require("./utils");
 
 const skippable_ends = [".db", ".db-shm", ".db-wal", "journal"];
 
@@ -11,14 +11,7 @@ async function list_all_files(archivepath, relpath) {
 	let read = await fs.readdir(slashpath.join(archivepath, relpath));
 	for (let o of read) {
 		let o_lower = o.toLowerCase();
-		let skip = false;
-		for (let end of skippable_ends) {
-			if (o_lower.endsWith(end)) {
-				skip = true;
-				break;
-			}
-		}
-		if (skip) {
+		if (ends_with_any(o_lower, skippable_ends)) {
 			continue;
 		}
 		let new_relpath = slashpath.join(relpath, o);
@@ -45,14 +38,7 @@ function list_all_files_alterative(archivepath, relpath) {
 		let promises = [];
 		for (let o of read) {
 			let o_lower = o.toLowerCase();
-			let skip = false;
-			for (let end of skippable_ends) {
-				if (o_lower.endsWith(end)) {
-					skip = true;
-					break;
-				}
-			}
-			if (skip) {
+			if (ends_with_any(o_lower, skippable_ends)) {
 				continue;
 			}
 			let new_relpath = slashpath.join(relpath, o);
