@@ -343,6 +343,9 @@ function menu_build() {
 				},
 			]
 		},
+		{
+			label: process.versions.electron,
+		},
 	];
 
 	return electron.Menu.buildFromTemplate(template);
