@@ -32,7 +32,7 @@ async function list_all_files(archivepath, relpath) {
 // Pure promise-based version without using async / await keywords. However, the await version
 // might be better because it doesn't try to concurrently read multiple folders at once?
 
-function list_all_files_alterative(archivepath, relpath) {
+function list_all_files_alternative(archivepath, relpath) {
 	return fs.readdir(slashpath.join(archivepath, relpath)).then(read => {
 		let files = [];
 		let promises = [];
