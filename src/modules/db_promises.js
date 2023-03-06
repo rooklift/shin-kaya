@@ -39,6 +39,7 @@ exports.connect = function() {			// Using config.sgfdir
 	}
 
 	current_db = sql(slashpath.join(config.sgfdir, "shin-kaya.db"));
+	current_db.pragma("journal_mode = WAL");		// Apparently this is recommended.
 	maybe_create_table();
 };
 
