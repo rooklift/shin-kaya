@@ -7,9 +7,9 @@ Simple go game database app, using Electron and [better-sqlite3](https://github.
 In the `src` folder, do:
 
 ```
-npm install better-sqlite3                    # Or maybe npm install better-sqlite3@8
-npm install --save-dev electron-rebuild
-.\node_modules\.bin\electron-rebuild.cmd
+npm install
+./node_modules/.bin/electron-rebuild.cmd
+./node_modules/.bin/electron .
 ```
 
 That seems to be it? After which, one can do `electron .` (assuming Electron is installed globally). If there was any demand for this I would consider making a proper release.
