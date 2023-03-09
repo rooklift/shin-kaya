@@ -49,14 +49,10 @@ function list_all_files_alternative(archivepath, relpath) {
 				promises.push(np);
 			}
 		}
-		// So we have files and promises... return a promise that will construct the final result...
-		return Promise.all(promises).then(promised_results => {
-			let result = Array.from(files);
-			for (let arr of promised_results) {
-				result = result.concat(arr);
-			}
-			return result;
-		});
+		promises.push(files);						// It is OK for a non-promise to be in the array seen by Promise.all().
+		return Promise.all(promises);
+	}).then(promised_results => {
+		return [].concat(...promised_results);
 	});
 }
 
