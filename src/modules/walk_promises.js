@@ -32,7 +32,7 @@ async function list_all_files(archivepath, relpath) {
 // Pure promise-based version without using async / await keywords. However, the await version
 // might be better because it doesn't try to concurrently read multiple folders at once?
 
-function list_all_files_alternative(archivepath, relpath) {
+function list_all_files_alt(archivepath, relpath) {
 	return fs.readdir(slashpath.join(archivepath, relpath)).then(read => {
 		let files = [];
 		let promises = [];
@@ -51,10 +51,10 @@ function list_all_files_alternative(archivepath, relpath) {
 		}
 		promises.push(files);						// It is OK for a non-promise to be in the array seen by Promise.all().
 		return Promise.all(promises);
-	}).then(promised_results => {
-		return [].concat(...promised_results);
+	}).then(results => {
+		return results.flat();
 	});
 }
 
 
-module.exports = {list_all_files};
+module.exports = {list_all_files, list_all_files_alt};
