@@ -52,7 +52,7 @@ function list_all_files_alt(archivepath, relpath) {
 		promises.push(files);						// It is OK for a non-promise to be in the array seen by Promise.all().
 		return Promise.all(promises);
 	}).then(results => {
-		return results.flat();
+		return results.flat(1);
 	});
 }
 
