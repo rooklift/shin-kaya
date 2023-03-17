@@ -52,7 +52,7 @@ body {
 	grid-template-rows: min-content 1fr;
 	grid-template-areas:
 		"preview"
-		"preview_path";
+		"path";
 }
 
 #preview {
@@ -61,8 +61,8 @@ body {
 	justify-self: right;
 }
 
-#preview_path {
-	grid-area: preview_path;
+#path {
+	grid-area: path;
 	margin: 0 1em 0 0;
 	justify-self: right;
 }
