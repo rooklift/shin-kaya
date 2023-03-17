@@ -216,7 +216,7 @@ let hub_main_props = {
 			this.preview_node.destroy_tree();
 			this.preview_node = new_node();
 			this.preview_path = null;
-			document.getElementById("path").innerHTML = "";
+			document.getElementById("path").innerHTML = "No selection";
 			set_thumbnail(this.preview_node);
 			return;
 		}

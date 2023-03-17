@@ -45,11 +45,19 @@ body {
 	white-space: pre;
 }
 
-#preview {
+#previewdiv {
 	grid-area: pd;
 	margin: 1em;
 	align-self: center;
 	justify-self: right;
+}
+
+#preview {
+	float: right;
+}
+
+#preview_path {
+	clear: all;
 }
 
 #gamesbox {
