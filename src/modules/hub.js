@@ -216,7 +216,7 @@ let hub_main_props = {
 			this.preview_node.destroy_tree();
 			this.preview_node = new_node();
 			this.preview_path = null;
-			document.getElementById("path").innerHTML = "No selection";
+			document.getElementById("preview_path").innerHTML = "No selection";
 			set_thumbnail(this.preview_node);
 			return;
 		}
@@ -255,7 +255,7 @@ let hub_main_props = {
 
 		}).finally(() => {
 
-			document.getElementById("path").innerHTML = slashpath.relative(config.sgfdir, new_preview_path);
+			document.getElementById("preview_path").innerHTML = slashpath.relative(config.sgfdir, new_preview_path);
 			set_thumbnail(this.preview_node);
 
 		});

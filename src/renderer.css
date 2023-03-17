@@ -26,42 +26,49 @@ body {
 	grid-template-columns: 1fr;
 	grid-template-rows: min-content 1fr;
 	grid-template-areas:
-		"s_p"
-		"g";
+		"search_preview"
+		"gamesbox";
 }
 
 #search_preview {
-	grid-area: s_p;
+	grid-area: search_preview;
 	display: grid;
 	grid-template-columns: min-content 1fr;
 	grid-template-rows: 1fr;
 	grid-template-areas:
-		"sd pd";
+		"searchdiv previewdiv";
 }
 
 #searchdiv {
-	grid-area: sd;
+	grid-area: searchdiv;
 	margin: 1em;
 	white-space: pre;
 }
 
 #previewdiv {
-	grid-area: pd;
-	margin: 1em;
-	align-self: center;
-	justify-self: right;
+	grid-area: previewdiv;
+	display: grid;
+	grid-template-columns: 1fr;
+	grid-template-rows: min-content 1fr;
+	grid-template-areas:
+		"preview"
+		"preview_path";
 }
 
 #preview {
-	float: right;
+	grid-area: preview;
+	margin: 1em;
+	justify-self: right;
 }
 
 #preview_path {
-	clear: all;
+	grid-area: preview_path;
+	margin: 0 1em 0 0;
+	justify-self: right;
 }
 
 #gamesbox {
-	grid-area: g;
+	grid-area: gamesbox;
 	margin: 1em;
 	background-color: #f0f0f0ff;
 	white-space: pre;
