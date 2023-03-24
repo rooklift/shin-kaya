@@ -125,10 +125,8 @@ function sort_records(records) {
 		if (a.DT > b.DT) return 1;
 		if (a.EV < b.EV) return -1;
 		if (a.EV > b.EV) return 1;
-		if (a.EV === b.EV) {
-			if (a.RO < b.RO) return -1;
-			if (a.RO > b.RO) return 1;
-		}
+		if (a.RO < b.RO) return -1;
+		if (a.RO > b.RO) return 1;
 		if (a.PB < b.PB) return -1;
 		if (a.PB > b.PB) return 1;
 		return 0;
