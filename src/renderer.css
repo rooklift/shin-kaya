@@ -64,6 +64,8 @@ body {
 #path {
 	grid-area: path;
 	margin: 0 1em 0 0;
+	white-space: nowrap;
+	overflow: hidden;		/* Somehow this allows the path to enter the margin of the search div on the left, which is good. I hate CSS. */
 	justify-self: right;
 }
 
