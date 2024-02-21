@@ -65,31 +65,31 @@ let hub_main_props = {
 		db.stop_update();
 	},
 
-	reset_db: function() {
+	unable: function() {
 		if (db.wip()) {
 			alert("Unable. Work is in progress.");
-			return;
+			return true;
 		}
 		if (!db.current()) {
 			this.display_no_connection();
-			return;
+			return true;
 		}
-		db.drop_table();
-		this.display_row_count();
+		return false;
+	},
+
+	reset_db: function() {
+		if (!this.unable()) {
+			db.drop_table();
+			this.display_row_count();
+		}
 	},
 
 	display_row_count: function() {
-		if (db.wip()) {
-			alert("Unable. Work is in progress.");
-			return;
+		if (!this.unable()) {
+			let st = db.current().prepare(`SELECT COUNT(*) FROM Games`);
+			let count = st.get()["COUNT(*)"];
+			document.getElementById("status").innerHTML = `Database has ${count} entries - ${config.sgfdir}`;
 		}
-		if (!db.current()) {
-			this.display_no_connection();
-			return;
-		}
-		let st = db.current().prepare(`SELECT COUNT(*) FROM Games`);
-		let count = st.get()["COUNT(*)"];
-		document.getElementById("status").innerHTML = `Database has ${count} entries - ${config.sgfdir}`;
 	},
 
 	get_iterator_from_fields: function() {
@@ -127,21 +127,13 @@ let hub_main_props = {
 	},
 
 	get_all: function() {			// For debugging, returns the actual SQL records.
-
-		if (db.wip()) {
+		if (this.unable()) {
 			return null;
 		}
-
-		if (!db.current()) {
-			return null;
-		}
-
 		let records = [];
-
 		for (let o of this.get_iterator_from_fields()) {
 			records.push(o);
 		}
-
 		return records;
 	},
 
@@ -191,21 +183,6 @@ let hub_main_props = {
 		document.getElementById("gamesbox").innerHTML = lines.join("\n");
 
 		this.set_preview_from_path(null);
-	},
-
-	unable: function() {
-
-		if (db.wip()) {
-			alert("Unable. Work is in progress.");
-			return true;
-		}
-
-		if (!db.current()) {
-			this.display_no_connection();
-			return true;
-		}
-
-		return false;
 	},
 
 	search: function() {
