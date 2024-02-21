@@ -191,7 +191,7 @@ let hub_main_props = {
 		}
 	},
 
-	raw: function(s) {
+	raw: function(s) {				// For debugging, executes a raw SQL statement. Use "SELECT * FROM Games WHERE ... "
 		if (!this.unable()) {
 			this.handle_results(db.current().prepare(s).iterate());
 		}
