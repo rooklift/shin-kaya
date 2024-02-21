@@ -92,7 +92,7 @@ let hub_main_props = {
 		document.getElementById("status").innerHTML = `Database has ${count} entries - ${config.sgfdir}`;
 	},
 
-	get_iterator: function() {
+	get_iterator_from_fields: function() {
 
 		if (!db.current()) {
 			return [];
@@ -100,7 +100,7 @@ let hub_main_props = {
 
 		let binding = {
 			relpath:  "%" + document.getElementById("relpath").value.trim() + "%",
-			dyer:     "%" + document.getElementById("dyer").value.trim() + "%", 
+			dyer:     "%" + document.getElementById("dyer").value.trim() + "%",
 			P1:       "%" + document.getElementById("P1").value.trim() + "%",
 			P2:       "%" + document.getElementById("P2").value.trim() + "%",
 			DT:       "%" + document.getElementById("DT").value.trim() + "%",
@@ -138,31 +138,21 @@ let hub_main_props = {
 
 		let records = [];
 
-		for (let o of this.get_iterator()) {
+		for (let o of this.get_iterator_from_fields()) {
 			records.push(o);
 		}
 
 		return records;
 	},
 
-	search: function() {
-
-		if (db.wip()) {
-			alert("Unable. Work is in progress.");
-			return;
-		}
-
-		if (!db.current()) {
-			this.display_no_connection();
-			return;
-		}
+	handle_results: function(iterator) {
 
 		this.lookups = [];
 
 		let records = [];
 		let truncated = false;
 
-		for (let o of this.get_iterator()) {
+		for (let o of iterator) {
 			records.push(o);
 			if (records.length >= 9999) {
 				truncated = true;
@@ -201,7 +191,33 @@ let hub_main_props = {
 		document.getElementById("gamesbox").innerHTML = lines.join("\n");
 
 		this.set_preview_from_path(null);
+	},
 
+	unable: function() {
+
+		if (db.wip()) {
+			alert("Unable. Work is in progress.");
+			return true;
+		}
+
+		if (!db.current()) {
+			this.display_no_connection();
+			return true;
+		}
+
+		return false;
+	},
+
+	search: function() {
+		if (!this.unable()) {
+			this.handle_results(this.get_iterator_from_fields());
+		}
+	},
+
+	raw: function(s) {
+		if (!this.unable()) {
+			this.handle_results(db.current().prepare(s).iterate());
+		}
 	},
 
 	set_preview_from_path: function(new_preview_path) {
