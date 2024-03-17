@@ -33,7 +33,7 @@ function natural_compare(a, b) {		// Both should be strings.
 			let na = extract_number(a, i);
 			let nb = extract_number(b, j);
 			if (na !== nb) {
-				return parseInt(na, 10) - parseInt(nb, 10);		// Or is it the other way around??
+				return parseInt(na, 10) - parseInt(nb, 10);
 			}
 			i += na.length;
 			j += nb.length;
