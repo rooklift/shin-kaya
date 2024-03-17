@@ -38,7 +38,7 @@ exports.connect = function() {			// Using config.sgfdir
 		return;
 	}
 
-	current_db = sql(slashpath.join(config.sgfdir, "shin-kaya.db"));
+	current_db = sql(slashpath.join(config.sgfdir, ".shin-kaya.db"));
 	current_db.pragma("journal_mode = WAL");		// Apparently this is recommended.
 	maybe_create_table();
 };
@@ -113,7 +113,7 @@ exports.update = function() {
 
 	let database = current_db;
 	let archivepath = config.sgfdir;
-	
+
 	return list_all_files(archivepath, "").then(files => {
 		return main_update_promise(database, archivepath, make_db_set(database), files);
 	}).finally(() => {
@@ -244,7 +244,7 @@ function continue_additions(database, archivepath, arr) {
 				console.log(err);
 				continue;
 			}
-			
+
 			st.run(record);
 		}
 	});
