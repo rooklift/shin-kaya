@@ -1,11 +1,12 @@
 "use strict";
 
 const fs = require("fs");
-const slashpath = require("./slashpath");
-const load_sgf = require("./load_sgf");
-const { replace_all, safe_html, pad_or_slice } = require("./utils");
 
 const gogod_name_fixes = require("./gogod_name_fixes");
+const load_sgf = require("./load_sgf");
+const natural_compare = require("./natural_compare");
+const slashpath = require("./slashpath");
+const { replace_all, safe_html, pad_or_slice } = require("./utils");
 
 function create_record(root, relpath) {					// root is an SGF node
 
@@ -123,10 +124,14 @@ function sort_records(records) {
 	records.sort((a, b) => {
 		if (a.DT < b.DT) return -1;
 		if (a.DT > b.DT) return 1;
-		if (a.EV < b.EV) return -1;
-		if (a.EV > b.EV) return 1;
-		if (a.RO < b.RO) return -1;
-		if (a.RO > b.RO) return 1;
+		let evc = natural_compare(a.EV, b.EV);
+		if (evc !== 0) {
+			return evc;
+		}
+		let rc = natural_compare(a.RO, b.RO);
+		if (rc !== 0) {
+			return rc;
+		}
 		if (a.PB < b.PB) return -1;
 		if (a.PB > b.PB) return 1;
 		return 0;
@@ -169,9 +174,9 @@ function span_string(record, element_id) {
 			" " +
 			pad_or_slice(record.movecount, 4, true) +
 			"  " +
-			pad_or_slice(ha_string, 3) + 
+			pad_or_slice(ha_string, 3) +
 			" " +
-			pad_or_slice(`${record.PB} ${record.BR}`, 26) + 
+			pad_or_slice(`${record.PB} ${record.BR}`, 26) +
 			" " +
 			result_direction +
 			" " +
