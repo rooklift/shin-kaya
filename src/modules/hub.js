@@ -55,6 +55,9 @@ let hub_main_props = {
 		}
 		document.getElementById("status").innerHTML = `Updating, this may take some time...`;
 		db.update().then((o) => {
+			if (o.new_records.length > 0) {
+				this.handle_records(o.new_records);
+			}
 			document.getElementById("status").innerHTML = `Update completed - deletions: ${o.deletions}, additions: ${o.additions}`;
 		}).catch(err => {
 			document.getElementById("status").innerHTML = err.toString();
@@ -137,9 +140,7 @@ let hub_main_props = {
 		return records;
 	},
 
-	handle_results: function(iterator) {
-
-		this.lookups = [];
+	handle_iterator: function(iterator) {
 
 		let records = [];
 		let truncated = false;
@@ -151,6 +152,18 @@ let hub_main_props = {
 				break;
 			}
 		}
+
+		this.handle_records(records, truncated);
+	},
+
+	handle_records: function(records, truncated = false) {
+
+		if (records.length > 9999) {
+			records = records.slice(0, 9999);
+			truncated = true;
+		}
+
+		this.lookups = [];
 
 		let dedup_count = 0;
 
@@ -187,13 +200,13 @@ let hub_main_props = {
 
 	search: function() {
 		if (!this.unable()) {
-			this.handle_results(this.get_iterator_from_fields());
+			this.handle_iterator(this.get_iterator_from_fields());
 		}
 	},
 
 	raw: function(s) {				// For debugging, executes a raw SQL statement. Use "SELECT * FROM Games WHERE ... "
 		if (!this.unable()) {
-			this.handle_results(db.current().prepare(s).iterate());
+			this.handle_iterator(db.current().prepare(s).iterate());
 		}
 	},
 

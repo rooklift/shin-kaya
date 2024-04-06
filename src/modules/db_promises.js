@@ -169,15 +169,15 @@ function main_update_promise(database, archivepath, db_set, files) {
 	}
 
 	if (missing_files.length === 0 && new_files.length === 0) {
-		return Promise.resolve({additions: 0, deletions: 0});
+		return Promise.resolve({additions: 0, deletions: 0, new_records: []});
 	}
 
 	return new Promise((resolve, reject) => {
-		continue_work(resolve, reject, database, archivepath, missing_files, new_files, 0, 0);
+		continue_work(resolve, reject, database, archivepath, missing_files, new_files, 0, 0, []);
 	});
 }
 
-function continue_work(resolve, reject, database, archivepath, missing_files, new_files, missing_off, new_off) {
+function continue_work(resolve, reject, database, archivepath, missing_files, new_files, missing_off, new_off, new_records) {
 
 	if (database !== current_db) {
 		reject(new Error("continue_work(): database changed unexpectedly"));
@@ -195,17 +195,17 @@ function continue_work(resolve, reject, database, archivepath, missing_files, ne
 		missing_off += DELETION_BATCH_SIZE;
 	} else if (new_off < new_files.length) {
 		document.getElementById("status").innerHTML = `Additions: ${new_off} of ${new_files.length}...`;
-		continue_additions(database, archivepath, new_files.slice(new_off, new_off + ADDITION_BATCH_SIZE));
+		new_records = new_records.concat(continue_additions(database, archivepath, new_files.slice(new_off, new_off + ADDITION_BATCH_SIZE)));
 		new_off += ADDITION_BATCH_SIZE;
 	}
 
 	if (missing_off >= missing_files.length && new_off >= new_files.length) {
-		resolve({additions: new_files.length, deletions: missing_files.length});
+		resolve({additions: new_files.length, deletions: missing_files.length, new_records: new_records});
 		return;
 	}
 
 	setTimeout(() => {
-		continue_work(resolve, reject, database, archivepath, missing_files, new_files, missing_off, new_off);
+		continue_work(resolve, reject, database, archivepath, missing_files, new_files, missing_off, new_off, new_records);
 	}, 5);
 }
 
@@ -232,6 +232,8 @@ function continue_additions(database, archivepath, arr) {
 		)
 	`);
 
+	let ret = [];
+
 	let add_new = database.transaction(() => {
 
 		for (let relpath of arr) {
@@ -240,6 +242,7 @@ function continue_additions(database, archivepath, arr) {
 
 			try {
 				record = create_record_from_path(archivepath, relpath);
+				ret.push(record);
 			} catch (err) {
 				console.log(err);
 				continue;
@@ -250,5 +253,7 @@ function continue_additions(database, archivepath, arr) {
 	});
 
 	add_new();
+
+	return ret;
 }
 
