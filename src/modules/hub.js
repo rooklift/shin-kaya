@@ -234,8 +234,7 @@ let hub_main_props = {
 		}
 
 		// The main part of this function is async, on the theory that there may be a little lag time when
-		// loading the file, which may feel unresponsive. Note this.preview_path is set instantly, so that we
-		// can check whether it was changed (by another call to this function) while the file was loading...
+		// loading the file, which may feel unresponsive. We use increasing request_id vals to avoid stale updates.
 
 		this.preview_path = new_preview_path;
 
