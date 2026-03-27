@@ -21,6 +21,7 @@ function init() {
 	let ret = Object.create(hub_prototype);
 	ret.lookups = [];
 	ret.preview_path = null;
+	ret.preview_request_id = 0;
 	ret.preview_node = new_node();
 
 	set_thumbnail(ret.preview_node);
@@ -218,11 +219,16 @@ let hub_main_props = {
 			return;
 		}
 
+		// Note: this.preview_request_id is incremented only after the above abort, otherwise
+		// 2 calls in rapid succession to this function (with the same argument) would both fail:
+
+		let request_id = ++this.preview_request_id;
+
 		if (typeof new_preview_path !== "string") {
 			this.preview_node.destroy_tree();
 			this.preview_node = new_node();
 			this.preview_path = null;
-			document.getElementById("path").innerHTML = "&nbsp;";
+			document.getElementById("path").textContent = "\u00a0";
 			set_thumbnail(this.preview_node);
 			return;
 		}
@@ -235,11 +241,16 @@ let hub_main_props = {
 
 		fs.readFile(new_preview_path).then(buf => {					// The read itself could throw.
 
-			if (this.preview_path !== new_preview_path) {
+			if (request_id !== this.preview_request_id) {
 				return;
 			}
 
 			let new_root = load_sgf(buf);							// This could throw.
+
+			if (request_id !== this.preview_request_id) {
+				new_root.destroy_tree();
+				return;
+			}
 
 			this.preview_node.destroy_tree();
 			this.preview_node = new_root;
@@ -252,18 +263,21 @@ let hub_main_props = {
 				}
 			}
 
+			document.getElementById("path").textContent = slashpath.relative(config.sgfdir, new_preview_path);
+			set_thumbnail(this.preview_node);
+
 		}).catch(err => {											// Reachable from the 2 throw locations, above.
+
+			if (request_id !== this.preview_request_id) {
+				return;
+			}
 
 			console.log("While trying to set preview:", err.toString());
 			this.preview_node.destroy_tree();
 			this.preview_node = new_node();
 			this.preview_path = null;
-
-		}).finally(() => {
-
-			document.getElementById("path").innerHTML = slashpath.relative(config.sgfdir, new_preview_path);
+			document.getElementById("path").textContent = "\u00a0";
 			set_thumbnail(this.preview_node);
-
 		});
 	},
 
