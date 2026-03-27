@@ -143,6 +143,10 @@ function deduplicate_records(records) {
 	records.sort((a, b) => {
 		if (a.dyer < b.dyer) return -1;
 		if (a.dyer > b.dyer) return 1;
+		if (a.DT < b.DT) return -1;
+		if (a.DT > b.DT) return 1;
+		if (a.movecount < b.movecount) return -1;
+		if (a.movecount > b.movecount) return 1;
 		return 0;
 	});
 
