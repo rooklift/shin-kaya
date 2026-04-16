@@ -1,6 +1,6 @@
-![Screenshot](https://user-images.githubusercontent.com/16438795/166155149-e3d58f4d-e02a-436f-928d-fe9b9c2a6665.png)
-
 Simple go game database app, using Electron and [better-sqlite3](https://github.com/JoshuaWise/better-sqlite3).
+
+For my own use, this is superceded by [Shin Kaya 2](https://github.com/rooklift/shin-kaya-2) though I'm not sure if I recommend it to others.
 
 ## Building
 
